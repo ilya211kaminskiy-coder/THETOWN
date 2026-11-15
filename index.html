@@ -5,231 +5,372 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THETOWN — Геополитический сервер Minecraft</title>
-    <!-- Шрифты -->
+    <meta name="description" content="Геополитический сервер Minecraft на реальной карте Земли. Строй города, развивай экономику, веди дипломатию и войны, создавая собственную Империю!">
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Иконки FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         :root {
-            --bg-dark: #0b0d12;
+            --bg-main: #0b0d12;
+            --bg-secondary: #0f1219;
             --bg-card: #131722;
-            --bg-card-hover: #1a2030;
-            --accent: #f59e0b;
-            --accent-hover: #d97706;
-            --accent-glow: rgba(245, 158, 11, 0.35);
-            --voice-color: #10b981;
-            --yt-color: #ef4444;
-            --support-color: #38bdf8;
-            --admin-color: #a855f7;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --border: rgba(255, 255, 255, 0.08);
+            --bg-card-hover: #181d2c;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(245, 158, 11, 0.35);
+            
+            --accent-amber: #f59e0b;
+            --accent-amber-hover: #d97706;
+            --accent-amber-glow: rgba(245, 158, 11, 0.25);
+            
+            --accent-green: #10b981;
+            --accent-green-glow: rgba(16, 185, 129, 0.25);
+            
+            --accent-red: #ef4444;
+            --accent-red-glow: rgba(239, 68, 68, 0.25);
+            
+            --accent-blue: #38bdf8;
+            --accent-blue-glow: rgba(56, 189, 248, 0.25);
+            
+            --accent-purple: #a855f7;
+            --accent-purple-glow: rgba(168, 85, 247, 0.25);
+            
+            --discord-color: #5865F2;
+            --youtube-color: #ef4444;
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
             scroll-behavior: smooth;
+            scroll-padding-top: 90px;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(245, 158, 11, 0.07) 0%, transparent 35%),
+                radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.05) 0%, transparent 35%),
+                radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.04) 0%, transparent 40%),
+                linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
         }
 
-        /* --- СТИЛЬ ЛОГОТИПА THETOWN --- */
-        .logo-text {
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e2436;
+            border-radius: 5px;
+            border: 2px solid var(--bg-main);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-amber);
+        }
+
+        .container {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button, input, textarea {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* 3D Blocky Logo Style */
+        .logo-3d {
             font-family: 'Luckiest Guy', cursive;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            background: linear-gradient(180deg, #d4d4d8 0%, #71717a 100%);
+            background: linear-gradient(180deg, #ffffff 0%, #d1d5db 48%, #9ca3af 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0px 4px 0px #000000) 
-                    drop-shadow(2px 0px 0px #000000) 
-                    drop-shadow(-2px 0px 0px #000000) 
-                    drop-shadow(0px -2px 0px #000000);
-            user-select: none;
+            filter: 
+                drop-shadow(0px 2px 0px #000000)
+                drop-shadow(2px 0px 0px #000000)
+                drop-shadow(-2px 0px 0px #000000)
+                drop-shadow(0px -2px 0px #000000)
+                drop-shadow(0px 5px 0px #1f2937)
+                drop-shadow(0px 7px 0px #000000)
+                drop-shadow(0px 10px 18px rgba(0, 0, 0, 0.75));
             display: inline-block;
+            user-select: none;
+            line-height: 1;
         }
 
-        /* --- НАВИГАЦИЯ --- */
-        header {
+        /* HEADER */
+        .header {
             position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
-            z-index: 1000;
-            background: rgba(11, 13, 18, 0.88);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
+            z-index: 900;
+            background: rgba(11, 13, 18, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
         }
 
-        .nav-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 15px 24px;
+        .header-inner {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            height: 80px;
+            gap: 16px;
         }
 
-        .nav-logo {
+        .header-logo {
             font-size: 2rem;
-            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+        .header-logo:hover {
+            transform: scale(1.04);
         }
 
-        .nav-links {
+        .nav-menu {
             display: flex;
+            align-items: center;
             gap: 24px;
             list-style: none;
         }
 
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
+        .nav-link {
+            font-size: 0.9rem;
             font-weight: 600;
-            font-size: 0.92rem;
-            transition: color 0.3s;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            position: relative;
+            padding: 6px 0;
         }
 
-        .nav-links a:hover {
-            color: var(--accent);
+        .nav-link:hover {
+            color: var(--text-primary);
         }
 
-        .nav-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--accent-amber);
+            transition: var(--transition);
+            border-radius: 2px;
         }
 
-        .btn-login {
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            padding: 10px 18px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-family: inherit;
-            cursor: pointer;
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .header-actions {
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: all 0.3s;
         }
 
-        .btn-login:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: var(--accent);
-        }
-
-        .btn-login img {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-        }
-
-        .btn-admin-nav {
-            background: rgba(168, 85, 247, 0.18);
-            color: #d8b4fe;
-            border: 1px solid rgba(168, 85, 247, 0.45);
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-family: inherit;
-            cursor: pointer;
-            display: none;
+        .btn {
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .btn-admin-nav:hover {
-            background: var(--admin-color);
-            color: #fff;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
-        }
-
-        .btn-ip-small {
-            background: var(--accent);
-            color: #000;
+            justify-content: center;
+            gap: 10px;
+            padding: 11px 20px;
+            border-radius: var(--radius-sm);
             font-weight: 700;
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: none;
+            font-size: 0.9rem;
             cursor: pointer;
-            font-family: inherit;
-            transition: all 0.3s;
-            box-shadow: 0 0 15px var(--accent-glow);
+            transition: var(--transition);
+            border: 1px solid transparent;
+            outline: none;
+            white-space: nowrap;
         }
 
-        .btn-ip-small:hover {
-            background: var(--accent-hover);
+        .btn-amber {
+            background: linear-gradient(135deg, var(--accent-amber) 0%, #d97706 100%);
+            color: #0b0d12;
+            box-shadow: 0 4px 20px var(--accent-amber-glow);
+        }
+        .btn-amber:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.45);
+            filter: brightness(1.06);
+        }
+
+        .btn-dark {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+        .btn-dark:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
         }
 
-        /* --- ГЛАВНЫЙ ЭКРАН (HERO) --- */
+        .btn-purple {
+            background: rgba(168, 85, 247, 0.15);
+            color: #d8b4fe;
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.15);
+        }
+        .btn-purple:hover {
+            background: var(--accent-purple);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px var(--accent-purple-glow);
+        }
+
+        .btn-blue {
+            background: rgba(56, 189, 248, 0.12);
+            color: var(--accent-blue);
+            border-color: rgba(56, 189, 248, 0.35);
+        }
+        .btn-blue:hover {
+            background: var(--accent-blue);
+            color: #0b0d12;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px var(--accent-blue-glow);
+        }
+
+        .btn-discord {
+            background: var(--discord-color);
+            color: #ffffff;
+            box-shadow: 0 4px 20px rgba(88, 101, 242, 0.3);
+        }
+        .btn-discord:hover {
+            background: #4752c4;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(88, 101, 242, 0.45);
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
+            color: #0b0d12;
+            box-shadow: 0 4px 20px var(--accent-green-glow);
+        }
+        .btn-green:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+            filter: brightness(1.06);
+        }
+
+        .btn-red {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border-color: rgba(239, 68, 68, 0.35);
+        }
+        .btn-red:hover {
+            background: var(--accent-red);
+            color: #ffffff;
+        }
+
+        .header-account-btn {
+            padding: 7px 14px;
+        }
+
+        .header-account-btn img {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            image-rendering: pixelated;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-sm);
+            font-size: 1.2rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* HERO SECTION */
         .hero {
+            padding: 155px 0 95px;
             position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             text-align: center;
-            padding: 120px 20px 80px;
-            background: 
-                radial-gradient(circle at 50% 30%, rgba(245, 158, 11, 0.15) 0%, transparent 60%),
-                linear-gradient(180deg, rgba(11, 13, 18, 0.5) 0%, var(--bg-dark) 100%),
-                url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            overflow: hidden;
         }
 
-        .hero-content {
-            max-width: 850px;
-            z-index: 2;
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 750px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
         }
 
-        .badges-row {
+        .hero-badges {
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 12px;
+            justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 28px;
         }
 
-        .badge {
+        .badge-pill {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(245, 158, 11, 0.15);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            color: var(--accent);
-            padding: 6px 16px;
-            border-radius: 50px;
+            gap: 9px;
+            padding: 8px 16px;
+            border-radius: 999px;
             font-size: 0.85rem;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background: rgba(19, 23, 34, 0.9);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
-        /* Статусы сервера */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s;
+        .badge-pill.geo-badge {
+            border-color: rgba(245, 158, 11, 0.35);
+            color: var(--accent-amber);
         }
 
         .status-dot {
@@ -239,2099 +380,2378 @@
             display: inline-block;
         }
 
+        .status-online .status-dot {
+            background: var(--accent-green);
+            box-shadow: 0 0 12px var(--accent-green);
+            animation: pulseGreen 1.8s infinite;
+        }
         .status-online {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.45);
+            border-color: rgba(16, 185, 129, 0.35);
             color: #34d399;
         }
-        .status-online .status-dot {
-            background: #10b981;
-            box-shadow: 0 0 10px #10b981;
-            animation: pulseDot 1.6s infinite;
-        }
 
+        .status-maintenance .status-dot {
+            background: var(--accent-amber);
+            box-shadow: 0 0 12px var(--accent-amber);
+            animation: pulseAmber 1.8s infinite;
+        }
         .status-maintenance {
-            background: rgba(245, 158, 11, 0.15);
-            border: 1px solid rgba(245, 158, 11, 0.45);
+            border-color: rgba(245, 158, 11, 0.4);
             color: #fbbf24;
         }
-        .status-maintenance .status-dot {
-            background: #f59e0b;
-            box-shadow: 0 0 10px #f59e0b;
-            animation: pulseDot 1.6s infinite;
-        }
 
+        .status-offline .status-dot {
+            background: var(--accent-red);
+            box-shadow: 0 0 12px var(--accent-red);
+        }
         .status-offline {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.45);
+            border-color: rgba(239, 68, 68, 0.4);
             color: #f87171;
         }
-        .status-offline .status-dot {
-            background: #ef4444;
-            box-shadow: 0 0 10px #ef4444;
-        }
 
-        @keyframes pulseDot {
+        @keyframes pulseGreen {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.65; }
+        }
+        @keyframes pulseAmber {
             0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.25); opacity: 0.65; }
         }
 
-        .hero-title {
-            font-size: clamp(3.5rem, 9vw, 6.5rem);
-            line-height: 1;
-            margin-bottom: 20px;
+        .hero-logo {
+            font-size: clamp(4rem, 10vw, 7.2rem);
+            margin-bottom: 24px;
+            letter-spacing: 4px;
         }
 
-        .hero-subtitle {
-            font-size: clamp(1.1rem, 2vw, 1.35rem);
-            color: #d1d5db;
-            margin-bottom: 40px;
+        .hero-desc {
+            max-width: 760px;
+            margin: 0 auto 38px;
+            font-size: 1.12rem;
+            color: var(--text-secondary);
             font-weight: 500;
+        }
+
+        .hero-desc strong {
+            color: var(--text-primary);
+            font-weight: 700;
         }
 
         .hero-buttons {
             display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            justify-content: center;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: #000;
-            padding: 16px 32px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 8px 25px var(--accent-glow);
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-hover);
-            transform: translateY(-3px);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.07);
-            color: var(--text-main);
-            padding: 16px 32px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid var(--border);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.14);
-            transform: translateY(-3px);
-        }
-
-        /* --- СЕКЦИИ --- */
-        section {
-            padding: 100px 24px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-title {
-            font-size: clamp(2rem, 4vw, 2.8rem);
-            font-weight: 900;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-        }
-
-        .section-title span {
-            color: var(--accent);
-        }
-
-        .section-desc {
-            color: var(--text-muted);
-            max-width: 620px;
-            margin: 0 auto;
-            font-size: 1.05rem;
-        }
-
-        /* --- О СЕРВЕРЕ (ФИШКИ) --- */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 24px;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 32px;
-            border-radius: 20px;
-            transition: all 0.35s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-6px);
-            border-color: rgba(245, 158, 11, 0.4);
-        }
-
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            background: rgba(245, 158, 11, 0.12);
-            color: var(--accent);
-            border-radius: 14px;
-            display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
-            margin-bottom: 20px;
-        }
-
-        .feature-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 12px;
-            font-weight: 800;
-        }
-
-        .feature-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        /* --- БЛОК ГОЛОСОВОГО ЧАТА --- */
-        .voice-banner {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.14) 0%, rgba(19, 23, 34, 0.95) 100%);
-            border: 2px solid rgba(16, 185, 129, 0.4);
-            border-radius: 24px;
-            padding: 48px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 32px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        }
-
-        .voice-info {
-            flex: 1 1 500px;
-        }
-
-        .voice-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-weight: 800;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-        }
-
-        .voice-info h2 {
-            font-size: 2.1rem;
-            font-weight: 900;
-            margin-bottom: 14px;
-        }
-
-        .voice-info p {
-            color: #d1d5db;
-            margin-bottom: 24px;
-            font-size: 1.05rem;
-        }
-
-        .btn-voice {
-            background: var(--voice-color);
-            color: #000;
-            padding: 15px 28px;
-            border-radius: 12px;
-            font-weight: 800;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
-        }
-
-        .btn-voice:hover {
-            background: #059669;
-            color: #fff;
-            transform: translateY(-2px);
-        }
-
-        .voice-visual {
-            flex: 0 0 auto;
-            font-size: 5rem;
-            color: var(--voice-color);
-            background: rgba(16, 185, 129, 0.1);
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px dashed rgba(16, 185, 129, 0.4);
-            margin: 0 auto;
-        }
-
-        /* --- КАК НАЧАТЬ ИГРАТЬ --- */
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-        }
-
-        .step-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 32px;
-            border-radius: 20px;
-            position: relative;
-        }
-
-        .step-num {
-            font-family: 'Luckiest Guy', cursive;
-            font-size: 3.5rem;
-            color: rgba(245, 158, 11, 0.18);
-            position: absolute;
-            top: 20px;
-            right: 25px;
-            line-height: 1;
-        }
-
-        .step-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 12px;
-            color: var(--accent);
-        }
-
-        /* --- МЕДИА / ЮТУБЕРЫ --- */
-        .media-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 28px;
-        }
-
-        .yt-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 22px;
-            padding: 32px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            transition: all 0.35s;
-            position: relative;
-        }
-
-        .yt-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(239, 68, 68, 0.5);
-            box-shadow: 0 12px 35px rgba(239, 68, 68, 0.15);
-        }
-
-        .yt-avatar {
-            width: 96px;
-            height: 96px;
-            border-radius: 20px;
-            margin-bottom: 18px;
-            border: 3px solid var(--yt-color);
-            background: #1f2937;
-            object-fit: cover;
-        }
-
-        .yt-badge {
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .yt-card h3 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .yt-card p {
-            color: var(--text-muted);
-            font-size: 0.92rem;
-            margin-bottom: 24px;
-        }
-
-        .btn-yt {
-            margin-top: auto;
-            background: var(--yt-color);
-            color: #fff;
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.3s;
-        }
-
-        .btn-yt:hover {
-            background: #dc2626;
-            transform: scale(1.03);
-        }
-
-        .yt-join-card {
-            border: 2px dashed rgba(255, 255, 255, 0.15);
-            background: rgba(19, 23, 34, 0.5);
-            justify-content: center;
-        }
-
-        /* --- АДМИНИСТРАЦИЯ --- */
-        .admins-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-            gap: 28px;
-            max-width: 1120px;
-            margin: 0 auto;
-        }
-
-        .admin-card {
-            background: linear-gradient(145deg, #161b28 0%, #0f131d 100%);
-            border: 1px solid var(--border);
-            border-radius: 22px;
-            padding: 28px;
-            display: flex;
-            align-items: center;
-            gap: 22px;
-            transition: all 0.35s;
-        }
-
-        .admin-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.12);
-        }
-
-        .admin-skin {
-            width: 85px;
-            height: 85px;
-            border-radius: 16px;
-            background: rgba(245, 158, 11, 0.1);
-            border: 2px solid var(--accent);
-            flex-shrink: 0;
-            image-rendering: pixelated;
-        }
-
-        .admin-details h3 {
-            font-size: 1.4rem;
-            font-weight: 900;
-            margin-bottom: 6px;
-        }
-
-        .role-tag {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 0.78rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .role-creator {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--accent);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-        }
-
-        .role-cofounder {
-            background: rgba(168, 85, 247, 0.2);
-            color: #c084fc;
-            border: 1px solid rgba(168, 85, 247, 0.4);
-        }
-
-        .role-support {
-            background: rgba(56, 189, 248, 0.2);
-            color: #38bdf8;
-            border: 1px solid rgba(56, 189, 248, 0.4);
-        }
-
-        .admin-details p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        /* --- ТЕХПОДДЕРЖКА --- */
-        .support-banner {
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0%, rgba(19, 23, 34, 0.96) 100%);
-            border: 2px solid rgba(56, 189, 248, 0.35);
-            border-radius: 24px;
-            padding: 44px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 28px;
-        }
-
-        .support-info {
-            flex: 1 1 480px;
-        }
-
-        .support-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(56, 189, 248, 0.18);
-            color: var(--support-color);
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-weight: 800;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            margin-bottom: 14px;
-        }
-
-        .support-info h2 {
-            font-size: 2rem;
-            font-weight: 900;
-            margin-bottom: 12px;
-        }
-
-        .support-info p {
-            color: #d1d5db;
-            margin-bottom: 24px;
-        }
-
-        .support-actions {
-            display: flex;
             flex-wrap: wrap;
             gap: 14px;
         }
 
-        .btn-support {
-            background: var(--support-color);
-            color: #000;
-            padding: 14px 26px;
+        .hero-buttons .btn {
+            padding: 15px 26px;
+            font-size: 0.98rem;
             border-radius: 12px;
-            font-weight: 800;
-            border: none;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.95rem;
+        }
+
+        /* SECTIONS COMMON */
+        section {
+            padding: 85px 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 720px;
+            margin: 0 auto 54px;
+        }
+
+        .section-tag {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-amber);
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            padding: 6px 14px;
+            border-radius: 999px;
+            margin-bottom: 14px;
         }
 
-        .btn-support:hover {
-            background: #0284c7;
-            color: #fff;
-            transform: translateY(-2px);
+        .section-title {
+            font-size: clamp(1.9rem, 4vw, 2.6rem);
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            margin-bottom: 14px;
+            color: var(--text-primary);
         }
 
-        /* --- МОДАЛЬНЫЕ ОКНА --- */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* CARDS GRID */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 26px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 26px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 34px 28px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-amber), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            background: var(--bg-card-hover);
+            border-color: var(--border-highlight);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            color: var(--accent-amber);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 3000;
-            opacity: 0;
+            font-size: 1.5rem;
+            margin-bottom: 22px;
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+
+        /* SIMPLE VOICE CHAT BANNER */
+        .voice-banner {
+            background: linear-gradient(135deg, rgba(19, 23, 34, 0.96) 0%, rgba(16, 185, 129, 0.12) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: var(--radius-lg);
+            padding: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .voice-banner-content {
+            max-width: 680px;
+        }
+
+        .voice-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 999px;
+            margin-bottom: 16px;
+        }
+
+        .voice-banner h2 {
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .voice-banner p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .voice-banner p strong {
+            color: #34d399;
+        }
+
+        /* HOW TO START STEPS */
+        .step-card {
+            position: relative;
+            padding-top: 40px;
+        }
+
+        .step-number {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 3.4rem;
+            line-height: 1;
+            color: rgba(245, 158, 11, 0.18);
+            position: absolute;
+            top: 22px;
+            right: 26px;
             pointer-events: none;
-            transition: opacity 0.3s;
+        }
+
+        .step-card .card-action {
+            margin-top: 22px;
+        }
+
+        /* MEDIA SECTION */
+        .media-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .media-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .media-avatar {
+            width: 74px;
+            height: 74px;
+            border-radius: 16px;
+            border: 2px solid var(--accent-amber);
+            image-rendering: pixelated;
+            background: #0b0d12;
+            flex-shrink: 0;
+        }
+
+        .media-icon-box {
+            width: 74px;
+            height: 74px;
+            border-radius: 16px;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: var(--youtube-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .media-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+
+        .media-tag.yt {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .media-tag.partner {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-amber);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        /* STAFF SECTION */
+        .staff-card {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 38px 26px;
+        }
+
+        .staff-skin-wrap {
+            height: 190px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .staff-skin-wrap::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.18) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        .staff-skin {
+            height: 175px;
+            width: auto;
+            image-rendering: pixelated;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.65));
+            transition: transform 0.3s ease;
+        }
+
+        .staff-card:hover .staff-skin {
+            transform: scale(1.06) translateY(-4px);
+        }
+
+        .staff-nick {
+            font-size: 1.45rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 999px;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .role-creator {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        .role-media {
+            background: rgba(168, 85, 247, 0.15);
+            color: #d8b4fe;
+            border: 1px solid rgba(168, 85, 247, 0.4);
+        }
+
+        .role-admin {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+        }
+
+        .role-player {
+            background: rgba(148, 163, 184, 0.12);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+        }
+
+        /* SUPPORT BANNER */
+        .support-banner {
+            background: linear-gradient(135deg, rgba(19, 23, 34, 0.96) 0%, rgba(56, 189, 248, 0.12) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: var(--radius-lg);
+            padding: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .support-banner-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #080a0e;
+            border-top: 1px solid var(--border-color);
+            padding: 48px 0 32px;
+            margin-top: 40px;
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .footer-copy {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .footer-links a:hover {
+            color: var(--accent-amber);
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 7, 11, 0.82);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
         }
 
         .modal-overlay.active {
             opacity: 1;
-            pointer-events: auto;
+            visibility: visible;
         }
 
         .modal-box {
             background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-lg);
             width: 100%;
-            max-width: 460px;
-            padding: 36px;
-            position: relative;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
-            transform: translateY(20px);
-            transition: transform 0.3s;
-            max-height: 92vh;
+            max-width: 560px;
+            max-height: 90vh;
             overflow-y: auto;
-        }
-
-        .modal-box.admin-modal-box {
-            max-width: 960px;
-        }
-
-        .modal-box.support-modal-box {
-            max-width: 620px;
+            padding: 32px;
+            position: relative;
+            transform: translateY(20px) scale(0.97);
+            transition: var(--transition);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
         }
 
         .modal-overlay.active .modal-box {
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-box.modal-lg {
+            max-width: 820px;
+        }
+
+        .modal-box.modal-xl {
+            max-width: 980px;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.06);
-            border: none;
-            color: var(--text-muted);
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.1rem;
-            transition: 0.2s;
+            transition: var(--transition);
         }
 
         .modal-close:hover {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+            border-color: rgba(239, 68, 68, 0.35);
         }
 
-        .auth-tabs {
+        /* TABS & FORMS */
+        .tabs-bar {
             display: flex;
-            background: rgba(0, 0, 0, 0.35);
+            background: var(--bg-main);
             padding: 5px;
             border-radius: 12px;
+            border: 1px solid var(--border-color);
             margin-bottom: 24px;
+            gap: 6px;
         }
 
-        .auth-tab {
+        .tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 11px 16px;
+            border-radius: 9px;
             border: none;
             background: transparent;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             font-weight: 700;
-            font-family: inherit;
-            border-radius: 9px;
+            font-size: 0.9rem;
             cursor: pointer;
-            transition: 0.25s;
+            transition: var(--transition);
         }
 
-        .auth-tab.active {
-            background: var(--accent);
-            color: #000;
+        .tab-btn.active {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .form-group {
             margin-bottom: 18px;
         }
 
-        .form-group label {
+        .form-label {
             display: block;
             font-size: 0.85rem;
             font-weight: 700;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             margin-bottom: 8px;
         }
 
-        .form-input {
+        .form-input, .form-textarea {
             width: 100%;
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: #fff;
-            font-family: inherit;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 13px 16px;
+            color: var(--text-primary);
             font-size: 0.95rem;
             outline: none;
-            transition: border-color 0.25s;
+            transition: var(--transition);
         }
 
-        .form-input:focus {
-            border-color: var(--accent);
+        .form-input:focus, .form-textarea:focus {
+            border-color: var(--accent-amber);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
         }
 
-        .form-submit {
-            width: 100%;
-            padding: 15px;
-            background: var(--accent);
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 1rem;
-            font-family: inherit;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 6px;
+        .form-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .form-submit:hover {
-            background: var(--accent-hover);
+        .form-textarea {
+            min-height: 110px;
+            resize: vertical;
         }
 
-        /* Карточка профиля */
-        .profile-view {
-            text-align: center;
+        /* PROFILE VIEW */
+        .profile-card-top {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
         }
 
-        .profile-skin-preview {
-            width: 96px;
-            height: 96px;
-            border-radius: 20px;
-            border: 3px solid var(--accent);
-            margin-bottom: 14px;
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
             image-rendering: pixelated;
+            border: 2px solid var(--accent-amber);
+            flex-shrink: 0;
         }
 
-        .profile-role-badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 50px;
-            font-size: 0.78rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-
-        .profile-stats {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 16px;
-            text-align: left;
-            margin-bottom: 20px;
-        }
-
-        .profile-stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.9rem;
-        }
-
-        .profile-stat-row:last-child {
-            border-bottom: none;
-        }
-
-        .profile-stat-row span:first-child {
-            color: var(--text-muted);
-        }
-
-        .profile-stat-row span:last-child {
-            font-weight: 700;
-        }
-
-        .btn-logout {
-            width: 100%;
-            padding: 13px;
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 12px;
-            font-weight: 700;
-            font-family: inherit;
-            cursor: pointer;
-            transition: 0.25s;
-            margin-top: 10px;
-        }
-
-        .btn-logout:hover {
-            background: #ef4444;
-            color: #fff;
-        }
-
-        /* --- СТИЛИ АДМИН-ПАНЕЛИ --- */
-        .admin-header-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .btn-refresh-db {
-            background: rgba(56, 189, 248, 0.15);
-            color: var(--support-color);
-            border: 1px solid rgba(56, 189, 248, 0.35);
-            padding: 9px 15px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.82rem;
-            font-family: inherit;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
-
-        .btn-refresh-db:hover {
-            background: var(--support-color);
-            color: #000;
-        }
-
-        .admin-stats-cards {
+        .profile-metaGrid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 14px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        .admin-stat-box {
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 16px;
+        .meta-box {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 13px 16px;
         }
 
-        .admin-stat-box span {
-            font-size: 0.8rem;
+        .meta-label {
+            font-size: 0.76rem;
             color: var(--text-muted);
-            font-weight: 600;
-            display: block;
-        }
-
-        .admin-stat-box strong {
-            font-size: 1.65rem;
-            font-weight: 900;
-            color: var(--text-main);
-        }
-
-        .admin-status-control {
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 14px;
-        }
-
-        .status-btn-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn-status-switch {
-            padding: 10px 16px;
-            border-radius: 10px;
             font-weight: 700;
-            font-size: 0.85rem;
-            font-family: inherit;
-            cursor: pointer;
-            border: 1px solid var(--border);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            transition: 0.25s;
-            display: inline-flex;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .meta-val {
+            font-size: 0.96rem;
+            font-weight: 800;
+        }
+
+        .ban-alert-box {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 20px;
+            color: #fecaca;
+        }
+
+        .ban-alert-title {
+            font-weight: 900;
+            color: #f87171;
+            font-size: 1rem;
+            display: flex;
             align-items: center;
             gap: 8px;
+            margin-bottom: 6px;
         }
 
-        .btn-status-switch.active-online {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-            border-color: #10b981;
-        }
-
-        .btn-status-switch.active-maintenance {
-            background: rgba(245, 158, 11, 0.2);
-            color: #fbbf24;
-            border-color: #f59e0b;
-        }
-
-        .btn-status-switch.active-offline {
-            background: rgba(239, 68, 68, 0.2);
-            color: #f87171;
-            border-color: #ef4444;
-        }
-
-        .admin-user-list {
+        /* TICKETS & ADMIN LISTS */
+        .tickets-list, .admin-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            max-height: 360px;
+            gap: 14px;
+            max-height: 430px;
             overflow-y: auto;
             padding-right: 4px;
         }
 
-        .admin-user-row {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
+        .ticket-item, .player-item {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
             border-radius: 14px;
-            padding: 14px 18px;
+            padding: 18px;
+            transition: var(--transition);
+        }
+
+        .ticket-top, .player-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 14px;
+            gap: 12px;
+            margin-bottom: 12px;
         }
 
-        .admin-user-row.is-banned {
-            border-color: rgba(239, 68, 68, 0.45);
-            background: rgba(239, 68, 68, 0.06);
-        }
-
-        .admin-user-info {
+        .user-mini {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
-        .admin-user-info img {
-            width: 42px;
-            height: 42px;
-            border-radius: 8px;
+        .user-mini img {
+            width: 40px;
+            height: 40px;
+            border-radius: 9px;
             image-rendering: pixelated;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        .admin-user-meta h4 {
-            font-size: 1rem;
+        .ticket-text {
+            color: var(--text-primary);
+            font-size: 0.94rem;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .ticket-reply {
+            margin-top: 12px;
+            background: rgba(56, 189, 248, 0.08);
+            border-left: 3px solid var(--accent-blue);
+            padding: 12px 14px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .ticket-reply-head {
+            font-size: 0.8rem;
             font-weight: 800;
+            color: var(--accent-blue);
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 6px;
         }
 
-        .admin-user-meta p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+        /* ADMIN PANEL SPECIFIC */
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 22px;
         }
 
-        .admin-actions-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .btn-ban {
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.35);
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.82rem;
-            font-family: inherit;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-ban:hover {
-            background: #ef4444;
-            color: #fff;
-        }
-
-        .btn-unban {
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.35);
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.82rem;
-            font-family: inherit;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-unban:hover {
-            background: #10b981;
-            color: #000;
-        }
-
-        .btn-del-acc {
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-del-acc:hover {
-            background: rgba(239, 68, 68, 0.25);
-            color: #f87171;
-        }
-
-        .ticket-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
+        .stat-box {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
             border-radius: 14px;
             padding: 16px;
-            margin-bottom: 12px;
         }
 
-        .ticket-header {
+        .stat-box .stat-num {
+            font-size: 1.65rem;
+            font-weight: 900;
+            margin-top: 4px;
+        }
+
+        .status-switcher {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 22px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
         }
 
-        .ticket-reply-box {
-            margin-top: 10px;
-            padding: 12px;
-            background: rgba(56, 189, 248, 0.08);
-            border-left: 3px solid var(--support-color);
+        .status-switcher-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 8px 13px;
+            font-size: 0.8rem;
             border-radius: 8px;
-            font-size: 0.88rem;
         }
 
-        .banned-alert-box {
-            background: rgba(239, 68, 68, 0.12);
-            border: 2px solid #ef4444;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            color: #fca5a5;
-        }
-
-        /* --- ФУТЕР --- */
-        footer {
-            background: #07080c;
-            border-top: 1px solid var(--border);
-            padding: 50px 24px;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .footer-logo {
-            font-size: 2.2rem;
-            margin-bottom: 12px;
-        }
-
-        /* Уведомление */
-        .toast {
+        /* TOAST NOTIFICATION */
+        .toast-container {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--voice-color);
-            color: #000;
-            padding: 16px 24px;
-            border-radius: 12px;
-            font-weight: 800;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transform: translateY(120px);
-            opacity: 0;
-            transition: all 0.35s;
-            z-index: 4000;
+            bottom: 26px;
+            right: 26px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
         }
 
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
+        .toast {
+            background: #151a28;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-left: 4px solid var(--accent-amber);
+            color: var(--text-primary);
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.65);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 290px;
+            max-width: 400px;
+            pointer-events: auto;
+            animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .toast.toast-success { border-left-color: var(--accent-green); }
+        .toast.toast-error { border-left-color: var(--accent-red); }
+        .toast.toast-info { border-left-color: var(--accent-blue); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1080px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: rgba(11, 13, 18, 0.98);
+                border-bottom: 1px solid var(--border-color);
+                flex-direction: column;
+                padding: 20px;
+                gap: 16px;
+            }
+            .nav-menu.open {
+                display: flex;
+            }
+            .mobile-toggle {
+                display: inline-flex;
+            }
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .admin-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
+            .grid-3, .grid-2 {
+                grid-template-columns: 1fr;
             }
             .voice-banner, .support-banner {
-                padding: 30px 24px;
-                text-align: center;
-            }
-            .support-actions {
-                justify-content: center;
-            }
-            .admin-card {
                 flex-direction: column;
-                text-align: center;
+                align-items: flex-start;
+                padding: 30px 24px;
+            }
+            .header-ip-btn {
+                display: none;
+            }
+            .profile-metaGrid {
+                grid-template-columns: 1fr;
+            }
+            .modal-box {
+                padding: 22px 18px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ШАПКА -->
-    <header>
-        <div class="nav-container">
-            <a href="#" class="logo-text nav-logo">THETOWN</a>
-            <ul class="nav-links">
-                <li><a href="#about">О сервере</a></li>
-                <li><a href="#voice">Голосовой чат</a></li>
-                <li><a href="#media">Медиа</a></li>
-                <li><a href="#admins">Администрация</a></li>
-                <li><a href="#support">Техподдержка</a></li>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="container header-inner">
+            <a href="#" class="logo-3d header-logo">THETOWN</a>
+
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#about" class="nav-link" onclick="closeMobileNav()">О сервере</a></li>
+                <li><a href="#voice" class="nav-link" onclick="closeMobileNav()">Voice Chat</a></li>
+                <li><a href="#start" class="nav-link" onclick="closeMobileNav()">Как начать</a></li>
+                <li><a href="#media" class="nav-link" onclick="closeMobileNav()">Медиа</a></li>
+                <li><a href="#staff" class="nav-link" onclick="closeMobileNav()">Руководство</a></li>
+                <li><a href="#support" class="nav-link" onclick="closeMobileNav()">Техподдержка</a></li>
             </ul>
-            <div class="nav-actions">
-                <button class="btn-admin-nav" id="navAdminBtn" onclick="openAdminModal()">
-                    <i class="fa-solid fa-shield-halved"></i> Админ-панель
+
+            <div class="header-actions">
+                <button class="btn btn-purple" id="headerAdminBtn" style="display: none;" onclick="openModal('adminModal')">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Админ-панель</span>
                 </button>
-                <button class="btn-login" id="navAccountBtn" onclick="openAccountModal()">
-                    <i class="fa-solid fa-user"></i> <span id="navAccountText">Аккаунт</span>
+
+                <button class="btn btn-dark header-account-btn" id="headerAccountBtn" onclick="openModal('accountModal')">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Аккаунт</span>
                 </button>
-                <button class="btn-ip-small" onclick="copyIP()">
-                    <i class="fa-regular fa-copy"></i> IP: f1.rustix.me:35223
+
+                <button class="btn btn-amber header-ip-btn" onclick="copyServerIP()">
+                    <i class="fa-solid fa-copy"></i>
+                    <span>f1.rustix.me:35223</span>
+                </button>
+
+                <button class="mobile-toggle" onclick="toggleMobileNav()" aria-label="Меню">
+                    <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- ГЛАВНЫЙ ЭКРАН -->
-    <div class="hero">
-        <div class="hero-content">
-            <div class="badges-row">
-                <div class="badge">
-                    <i class="fa-solid fa-earth-americas"></i> Геополитический сервер Minecraft
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badges">
+                <div class="badge-pill geo-badge">
+                    <i class="fa-solid fa-earth-americas"></i>
+                    <span>Геополитический сервер Minecraft</span>
                 </div>
-                <div id="serverStatusBadge" class="status-badge status-online">
+                <div class="badge-pill status-online" id="heroStatusBadge">
                     <span class="status-dot"></span>
-                    <span id="serverStatusText">Сервер включен</span>
+                    <span id="heroStatusText">Сервер включен</span>
                 </div>
             </div>
-            <br>
-            <h1 class="logo-text hero-title">THETOWN</h1>
-            <p class="hero-subtitle">
-                Реальная карта Земли. Полная свобода действий. Начни с нуля, основай свой город, веди дипломатию или войны и построй величайшую Империю!
+
+            <h1 class="logo-3d hero-logo">THETOWN</h1>
+
+            <p class="hero-desc">
+                Геополитический сервер Minecraft на <strong>реальной карте Земли</strong>. Начинай с нуля, строй величественные города, развивай экономику, веди тонкую дипломатию и масштабные войны, создавая собственную <strong>Империю</strong>!
             </p>
+
             <div class="hero-buttons">
-                <button class="btn-primary" onclick="copyIP()">
-                    <i class="fa-solid fa-play"></i> Скопировать IP: f1.rustix.me:35223
+                <button class="btn btn-amber" onclick="copyServerIP()">
+                    <i class="fa-solid fa-gamepad"></i>
+                    <span>Скопировать IP: f1.rustix.me:35223</span>
                 </button>
-                <a href="https://discord.gg/VBt99RQRN" target="_blank" class="btn-secondary">
-                    <i class="fa-brands fa-discord"></i> Наш Discord
+                <a href="https://discord.gg/VBt99RQRN" target="_blank" rel="noopener" class="btn btn-discord">
+                    <i class="fa-brands fa-discord"></i>
+                    <span>Наш Discord</span>
                 </a>
-                <button class="btn-secondary" onclick="openSupportModal()">
-                    <i class="fa-solid fa-headset"></i> Техподдержка
+                <button class="btn btn-blue" onclick="openModal('supportModal')">
+                    <i class="fa-solid fa-headset"></i>
+                    <span>Техподдержка</span>
                 </button>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- О СЕРВЕРЕ -->
+    <!-- ABOUT SERVER -->
     <section id="about">
-        <div class="section-header">
-            <h2 class="section-title">Твой путь к <span>Империи</span></h2>
-            <p class="section-desc">THETOWN — это уникальная песочница, где историю пишут сами игроки на реальной карте нашей планеты.</p>
-        </div>
-
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-globe"></i></div>
-                <h3>Реальная карта Земли</h3>
-                <p>Занимай реальные континенты, страны и регионы. Добывай ресурсы, прокладывай торговые пути и контролируй стратегические территории.</p>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag"><i class="fa-solid fa-crown"></i> Концепция мира</div>
+                <h2 class="section-title">О сервере THETOWN</h2>
+                <p class="section-subtitle">Живой политический мир, где историю пишут сами игроки без заскриптованных рамок.</p>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-city"></i></div>
-                <h3>От поселения до Империи</h3>
-                <p>Начни с маленького лагеря с друзьями, развивай экономику и инфраструктуру, объединяй города в мощную державу.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-handshake-simple"></i></div>
-                <h3>Геополитика и Войны</h3>
-                <p>Заключай альянсы, подписывай пакты, объявляй войны за территории и проводи живые переговоры прямо в игре.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ОБЯЗАТЕЛЬНЫЙ МОД SIMPLE VOICE CHAT -->
-    <section id="voice">
-        <div class="voice-banner">
-            <div class="voice-info">
-                <div class="voice-tag">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Обязательное условие для входа
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon"><i class="fa-solid fa-earth-europe"></i></div>
+                    <h3>Реальная карта Земли</h3>
+                    <p>Огромный детализированный мир, повторяющий настоящие континенты, климатические зоны, моря и стратегические проливы нашей планеты. Выбирай любой регион для старта.</p>
                 </div>
-                <h2>Мод Simple Voice Chat</h2>
-                <p>
-                    Для игры на сервере <strong>THETOWN</strong> установка мода <strong>Simple Voice Chat</strong> является <u>обязательной</u>! Живая дипломатия, переговоры между правителями и общение в городах строятся на голосовом чате внутри игры.
-                </p>
-                <a href="https://modrinth.com/plugin/simple-voice-chat" target="_blank" class="btn-voice">
-                    <i class="fa-solid fa-download"></i> Скачать Simple Voice Chat (Modrinth)
-                </a>
-            </div>
-            <div class="voice-visual">
-                <i class="fa-solid fa-microphone-lines"></i>
-            </div>
-        </div>
-    </section>
 
-    <!-- КАК НАЧАТЬ ИГРАТЬ -->
-    <section id="start">
-        <div class="section-header">
-            <h2 class="section-title">Как начать <span>играть?</span></h2>
-            <p class="section-desc">Всего 3 простых шага отделяют тебя от создания собственного государства.</p>
-        </div>
-
-        <div class="steps-grid">
-            <div class="step-card">
-                <div class="step-num">01</div>
-                <h3>Установи Voice Chat</h3>
-                <p>Скачай и установи мод <strong>Simple Voice Chat</strong> для своей версии Minecraft (Fabric / Forge / NeoForge).</p>
-            </div>
-            <div class="step-card">
-                <div class="step-num">02</div>
-                <h3>Зайди в Discord</h3>
-                <p>Присоединяйся к нашему Discord-серверу, чтобы быть в курсе новостей, правил и дипломатии стран.</p>
-            </div>
-            <div class="step-card">
-                <div class="step-num">03</div>
-                <h3>Подключайся к серверу</h3>
-                <p>Добавь наш IP <strong>f1.rustix.me:35223</strong> в список серверов Minecraft, зови друзей и начинай строить свою Империю!</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- МЕДИА И ЮТУБЕРЫ -->
-    <section id="media">
-        <div class="section-header">
-            <h2 class="section-title">Медиа <span>Проекта</span></h2>
-            <p class="section-desc">Смотри ролики и стримы с политических арен сервера THETOWN.</p>
-        </div>
-
-        <div class="media-grid">
-            <div class="yt-card">
-                <img src="https://minotar.net/helm/Vunpos/150.png" alt="Vunpos" class="yt-avatar">
-                <span class="yt-badge"><i class="fa-brands fa-youtube"></i> Официальный креатор</span>
-                <h3>Vunpos</h3>
-                <p>Сооснователь проекта и главный контент-креатор THETOWN. Эпичные хроники государств, войны и развитие городов на сервере.</p>
-                <a href="https://www.youtube.com/@Vunpos" target="_blank" class="btn-yt">
-                    <i class="fa-brands fa-youtube"></i> Перейти на канал
-                </a>
-            </div>
-
-            <div class="yt-card yt-join-card">
-                <div class="feature-icon" style="margin: 0 auto 18px;">
-                    <i class="fa-solid fa-video"></i>
+                <div class="card">
+                    <div class="card-icon"><i class="fa-solid fa-landmark-dome"></i></div>
+                    <h3>От поселения до Империи</h3>
+                    <p>Игроки начинают с нуля: объединяйся с соратниками, закладывай фундамент первого города, выстраивай торговлю, логистику, законы и превращай страну в сверхдержаву.</p>
                 </div>
-                <h3>Снимаешь ролики?</h3>
-                <p>Мы активно поддерживаем ютуберов, стримеров и тиктокеров! Получи статус Медиа и бонусы для съёмок на THETOWN.</p>
-                <a href="https://discord.gg/VBt99RQRN" target="_blank" class="btn-secondary" style="margin-top: auto;">
-                    <i class="fa-solid fa-paper-plane"></i> Подать заявку в Discord
-                </a>
-            </div>
-        </div>
-    </section>
 
-    <!-- АДМИНИСТРАЦИЯ -->
-    <section id="admins">
-        <div class="section-header">
-            <h2 class="section-title">Руководство <span>THETOWN</span></h2>
-            <p class="section-desc">Команда администраторов, создающая и поддерживающая геополитический мир сервера.</p>
-        </div>
-
-        <div class="admins-grid">
-            <!-- MrLov3n4ik -->
-            <div class="admin-card">
-                <img src="https://minotar.net/armor/body/MrLov3n4ik/120.png" alt="MrLov3n4ik" class="admin-skin">
-                <div class="admin-details">
-                    <span class="role-tag role-creator"><i class="fa-solid fa-crown"></i> Создатель сервера</span>
-                    <h3>MrLov3n4ik</h3>
-                    <p>Основатель и главный разработчик THETOWN. Отвечает за техническую часть, механики и развитие проекта.</p>
-                </div>
-            </div>
-
-            <!-- Vunpos -->
-            <div class="admin-card">
-                <img src="https://minotar.net/armor/body/Vunpos/120.png" alt="Vunpos" class="admin-skin">
-                <div class="admin-details">
-                    <span class="role-tag role-cofounder"><i class="fa-solid fa-star"></i> Сооснователь • Контент-креатор</span>
-                    <h3>Vunpos</h3>
-                    <p>Сооснователь сервера и медиа-лицо проекта. Отвечает за контент, ивенты и сообщество игроков.</p>
-                </div>
-            </div>
-
-            <!-- Sanraizzz -->
-            <div class="admin-card">
-                <img src="https://minotar.net/armor/body/Sanraizzz/120.png" alt="Sanraizzz" class="admin-skin">
-                <div class="admin-details">
-                    <span class="role-tag role-support"><i class="fa-solid fa-headset"></i> Администратор • Техподдержка</span>
-                    <h3>Sanraizzz</h3>
-                    <p>Администратор проекта и руководитель технической поддержки. Помогает игрокам в решении любых вопросов и проблем.</p>
+                <div class="card">
+                    <div class="card-icon"><i class="fa-solid fa-chess-knight"></i></div>
+                    <h3>Геополитика и Войны</h3>
+                    <p>Заключай военные альянсы и торговые союзы, проводи переговоры на высшем уровне или объявляй полномасштабные войны за территории, ресурсы и мировое господство.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ТЕХПОДДЕРЖКА -->
-    <section id="support">
-        <div class="support-banner">
-            <div class="support-info">
-                <div class="support-tag">
-                    <i class="fa-solid fa-headset"></i> Служба помощи игрокам
+    <!-- SIMPLE VOICE CHAT BANNER -->
+    <section id="voice" style="padding-top: 20px;">
+        <div class="container">
+            <div class="voice-banner">
+                <div class="voice-banner-content">
+                    <div class="voice-badge">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Внимание • Обязательное требование</span>
+                    </div>
+                    <h2>Обязательный мод Simple Voice Chat</h2>
+                    <p>
+                        На сервере <strong>THETOWN</strong> живое общение — основа дипломатии, торговли и координации армий. Мод <strong>Simple Voice Chat является обязательным</strong> для входа на сервер. Установите его на свой лаунчер перед подключением!
+                    </p>
                 </div>
-                <h2>Техническая поддержка THETOWN</h2>
-                <p>
-                    Возникли проблемы со входом на сервер, настройкой Simple Voice Chat или вопросы по игровому процессу? Оставь обращение прямо на сайте — наш администратор техподдержки <strong>Sanraizzz</strong> и команда проекта оперативно помогут тебе!
-                </p>
-                <div class="support-actions">
-                    <button class="btn-support" onclick="openSupportModal()">
-                        <i class="fa-solid fa-envelope-open-text"></i> Написать в техподдержку
-                    </button>
-                    <a href="https://discord.gg/VBt99RQRN" target="_blank" class="btn-secondary">
-                        <i class="fa-brands fa-discord"></i> Тикеты в Discord
+                <div>
+                    <a href="https://modrinth.com/plugin/simple-voice-chat" target="_blank" rel="noopener" class="btn btn-green" style="padding: 16px 28px; font-size: 1rem;">
+                        <i class="fa-solid fa-microphone-lines"></i>
+                        <span>Скачать с Modrinth</span>
                     </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- МОДАЛЬНОЕ ОКНО ТЕХПОДДЕРЖКИ -->
-    <div class="modal-overlay" id="supportModal" onclick="closeSupportOnOutside(event)">
-        <div class="modal-box support-modal-box">
-            <button class="modal-close" onclick="closeSupportModal()"><i class="fa-solid fa-xmark"></i></button>
-            <h2 style="font-weight: 900; font-size: 1.5rem; margin-bottom: 6px;">
-                <i class="fa-solid fa-headset" style="color: var(--support-color);"></i> Техподдержка THETOWN
-            </h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
-                Опиши свою проблему, и администрация ответит на твоё обращение.
-            </p>
+    <!-- HOW TO START -->
+    <section id="start">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag"><i class="fa-solid fa-compass"></i> Быстрый старт</div>
+                <h2 class="section-title">Как начать играть</h2>
+                <p class="section-subtitle">Всего 3 простых шага отделяют тебя от создания собственного государства на карте мира.</p>
+            </div>
 
-            <form onsubmit="submitSupportTicket(event)" style="margin-bottom: 24px;">
-                <div class="form-group">
-                    <label>Твой никнейм в Minecraft</label>
-                    <input type="text" id="supportNickInput" class="form-input" placeholder="Например: Steve" required minlength="3" maxlength="20">
+            <div class="grid-3">
+                <div class="card step-card">
+                    <div class="step-number">01</div>
+                    <div class="card-icon"><i class="fa-solid fa-headset"></i></div>
+                    <h3>Установи Voice Chat</h3>
+                    <p>Скачай и установи модификацию Simple Voice Chat под свою версию клиента, чтобы зайти на сервер и общаться с игроками напрямую в игре.</p>
+                    <div class="card-action">
+                        <a href="https://modrinth.com/plugin/simple-voice-chat" target="_blank" rel="noopener" class="btn btn-dark" style="width: 100%;">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Скачать мод</span>
+                        </a>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Описание проблемы или вопрос</label>
-                    <textarea id="supportMsgInput" class="form-input" rows="3" placeholder="Опиши подробно проблему..." required maxlength="500" style="resize: vertical;"></textarea>
-                </div>
-                <button type="submit" class="btn-support" style="width: 100%; justify-content: center;">
-                    <i class="fa-solid fa-paper-plane"></i> Отправить обращение
-                </button>
-            </form>
 
-            <div style="border-top: 1px solid var(--border); padding-top: 18px;">
-                <h4 style="margin-bottom: 12px; font-size: 0.95rem;">Твои обращения и ответы администрации:</h4>
-                <div id="myTicketsContainer" style="max-height: 240px; overflow-y: auto;"></div>
+                <div class="card step-card">
+                    <div class="step-number">02</div>
+                    <div class="card-icon"><i class="fa-brands fa-discord"></i></div>
+                    <h3>Зайди в Discord</h3>
+                    <p>Вступи в наше официальное сообщество Discord. Там публикуются мировые новости, дипломатические договоры, правила и ведутся наборы в города.</p>
+                    <div class="card-action">
+                        <a href="https://discord.gg/VBt99RQRN" target="_blank" rel="noopener" class="btn btn-discord" style="width: 100%;">
+                            <i class="fa-brands fa-discord"></i>
+                            <span>Присоединиться</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card step-card">
+                    <div class="step-number">03</div>
+                    <div class="card-icon"><i class="fa-solid fa-server"></i></div>
+                    <h3>Подключайся к серверу</h3>
+                    <p>Скопируй IP-адрес сервера, добавь его в сетевой игре Minecraft и отправляйся покорять континенты вместе со своей командой!</p>
+                    <div class="card-action">
+                        <button class="btn btn-amber" style="width: 100%;" onclick="copyServerIP()">
+                            <i class="fa-solid fa-copy"></i>
+                            <span>f1.rustix.me:35223</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- МОДАЛЬНОЕ ОКНО АККАУНТА / ВХОДА -->
-    <div class="modal-overlay" id="accountModal" onclick="closeModalOnOutside(event)">
-        <div class="modal-box">
-            <button class="modal-close" onclick="closeAccountModal()"><i class="fa-solid fa-xmark"></i></button>
+    <!-- PROJECT MEDIA -->
+    <section id="media">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag"><i class="fa-solid fa-video"></i> Контент и Хроники</div>
+                <h2 class="section-title">Медиа Проекта</h2>
+                <p class="section-subtitle">Следи за масштабными событиями на YouTube или стань официальным контент-креатором THETOWN.</p>
+            </div>
 
-            <!-- БЛОК АВТОРИЗАЦИИ / РЕГИСТРАЦИИ -->
-            <div id="authSection">
-                <h2 style="text-align: center; margin-bottom: 20px; font-weight: 900;">Личный кабинет</h2>
-                <div class="auth-tabs">
-                    <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Вход</button>
-                    <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Регистрация</button>
+            <div class="grid-2">
+                <!-- Vunpos Card -->
+                <div class="card media-card">
+                    <div>
+                        <div class="media-header">
+                            <img src="https://minotar.net/helm/Vunpos/150.png" alt="Vunpos" class="media-avatar" onerror="this.src='https://minotar.net/helm/MHF_Steve/150.png'">
+                            <div>
+                                <div class="media-tag yt"><i class="fa-brands fa-youtube"></i> Официальный канал</div>
+                                <h3 style="margin-bottom: 2px;">Vunpos</h3>
+                                <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">youtube.com/@Vunpos</span>
+                            </div>
+                        </div>
+                        <p style="margin-top: 18px;">
+                            Главный YouTube-канал создателя сервера THETOWN. Эксклюзивные хроники геополитических войн, обзоры великих Империй, интриги и документальные ролики о жизни сервера.
+                        </p>
+                    </div>
+                    <div>
+                        <a href="https://www.youtube.com/@Vunpos" target="_blank" rel="noopener" class="btn btn-red" style="width: 100%; background: var(--youtube-color); color: #fff;">
+                            <i class="fa-brands fa-youtube"></i>
+                            <span>Смотреть канал Vunpos</span>
+                        </a>
+                    </div>
                 </div>
 
-                <form id="authForm" onsubmit="handleAuth(event)">
+                <!-- New Creators Card -->
+                <div class="card media-card">
+                    <div>
+                        <div class="media-header">
+                            <div class="media-icon-box">
+                                <i class="fa-solid fa-clapperboard"></i>
+                            </div>
+                            <div>
+                                <div class="media-tag partner"><i class="fa-solid fa-star"></i> Набор открыт</div>
+                                <h3 style="margin-bottom: 2px;">Стать Контент-креатором</h3>
+                                <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">YouTube • Twitch • TikTok</span>
+                            </div>
+                        </div>
+                        <p style="margin-top: 18px;">
+                            Снимаешь интересные видео, шортсы или проводишь стримы по Minecraft? Мы активно поддерживаем новых авторов! Подай заявку в нашем Discord и получи статус медиа-партнёра проекта.
+                        </p>
+                    </div>
+                    <div>
+                        <a href="https://discord.gg/VBt99RQRN" target="_blank" rel="noopener" class="btn btn-amber" style="width: 100%;">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Подать заявку в Discord</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STAFF SECTION -->
+    <section id="staff">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag"><i class="fa-solid fa-users-gear"></i> Команда проекта</div>
+                <h2 class="section-title">Руководство THETOWN</h2>
+                <p class="section-subtitle">Администрация, обеспечивающая стабильную работу, развитие и честную игру на сервере.</p>
+            </div>
+
+            <div class="grid-3">
+                <!-- Vunpos -->
+                <div class="card staff-card">
+                    <div class="staff-skin-wrap">
+                        <img src="https://minotar.net/armor/body/Vunpos/120.png" alt="Vunpos" class="staff-skin" onerror="this.src='https://minotar.net/helm/Vunpos/150.png'">
+                    </div>
+                    <div class="staff-nick">Vunpos</div>
+                    <div class="role-badge role-creator">
+                        <i class="fa-solid fa-crown"></i> Создатель сервера
+                    </div>
+                    <p>Основатель и главный руководитель проекта THETOWN. Отвечает за разработку, обновления и стратегическое развитие сервера.</p>
+                </div>
+
+                <!-- MrLov3n4ik -->
+                <div class="card staff-card">
+                    <div class="staff-skin-wrap">
+                        <img src="https://minotar.net/armor/body/MrLov3n4ik/120.png" alt="MrLov3n4ik" class="staff-skin" onerror="this.src='https://minotar.net/helm/MrLov3n4ik/150.png'">
+                    </div>
+                    <div class="staff-nick">MrLov3n4ik</div>
+                    <div class="role-badge role-media">
+                        <i class="fa-solid fa-video"></i> Контент-креатор
+                    </div>
+                    <p>Официальный медиа-креатор проекта, отвечает за съёмки, контент и организацию масштабных игровых ивентов.</p>
+                </div>
+
+                <!-- Sanraizzz -->
+                <div class="card staff-card">
+                    <div class="staff-skin-wrap">
+                        <img src="https://minotar.net/armor/body/Sanraizzz/120.png" alt="Sanraizzz" class="staff-skin" onerror="this.src='https://minotar.net/helm/Sanraizzz/150.png'">
+                    </div>
+                    <div class="staff-nick">Sanraizzz</div>
+                    <div class="role-badge role-admin">
+                        <i class="fa-solid fa-screwdriver-wrench"></i> Администратор • Техподдержка
+                    </div>
+                    <p>Руководитель технической поддержки. Помогает игрокам с решением любых вопросов и следит за порядком на сервере.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SUPPORT BANNER SECTION -->
+    <section id="support" style="padding-top: 20px;">
+        <div class="container">
+            <div class="support-banner">
+                <div style="max-width: 650px;">
+                    <div class="section-tag" style="color: var(--accent-blue); border-color: rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.1);">
+                        <i class="fa-solid fa-headset"></i> Помощь игрокам 24/7
+                    </div>
+                    <h2 style="font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 900; margin-bottom: 12px;">Техническая поддержка THETOWN</h2>
+                    <p style="color: var(--text-secondary);">
+                        Столкнулись с проблемой при подключении, настройке голосового чата или хотите сообщить о нарушении? Оставьте обращение прямо на сайте или создайте тикет в нашем Discord!
+                    </p>
+                </div>
+                <div class="support-banner-actions">
+                    <button class="btn btn-blue" style="padding: 15px 24px;" onclick="openModal('supportModal')">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                        <span>Написать в техподдержку</span>
+                    </button>
+                    <a href="https://discord.gg/VBt99RQRN" target="_blank" rel="noopener" class="btn btn-discord" style="padding: 15px 24px;">
+                        <i class="fa-brands fa-discord"></i>
+                        <span>Тикеты в Discord</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div>
+                <a href="#" class="logo-3d" style="font-size: 1.7rem; margin-bottom: 8px;">THETOWN</a>
+                <p class="footer-copy">© 2025 THETOWN Geopolitical Server. Все права защищены. Не является официальным продуктом Mojang AB.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#about">О сервере</a>
+                <a href="#voice">Simple Voice Chat</a>
+                <a href="https://www.youtube.com/@Vunpos" target="_blank" rel="noopener">YouTube</a>
+                <a href="https://discord.gg/VBt99RQRN" target="_blank" rel="noopener">Discord</a>
+                <a href="javascript:void(0)" onclick="openModal('supportModal')">Техподдержка</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==========================================
+         MODAL 1: ACCOUNT (LOGIN / REGISTER / PROFILE)
+    =========================================== -->
+    <div class="modal-overlay" id="accountModal" onclick="handleOverlayClick(event, 'accountModal')">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-user-shield" style="color: var(--accent-amber);"></i>
+                    <span id="accountModalTitle">Личный кабинет THETOWN</span>
+                </div>
+                <button class="modal-close" onclick="closeModal('accountModal')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- GUEST VIEW (LOGIN / REGISTER) -->
+            <div id="authGuestView">
+                <div class="tabs-bar">
+                    <button class="tab-btn active" id="tabLoginBtn" onclick="switchAuthTab('login')">Вход в аккаунт</button>
+                    <button class="tab-btn" id="tabRegisterBtn" onclick="switchAuthTab('register')">Регистрация</button>
+                </div>
+
+                <!-- LOGIN FORM -->
+                <form id="loginForm" onsubmit="handleLogin(event)">
                     <div class="form-group">
-                        <label>Твой никнейм в Minecraft</label>
-                        <input type="text" id="mcNickInput" class="form-input" placeholder="Например: Steve" required minlength="3" maxlength="16">
+                        <label class="form-label">Никнейм в Minecraft</label>
+                        <input type="text" id="loginNick" class="form-input" placeholder="Например: Vunpos" required minlength="3" maxlength="16">
                     </div>
                     <div class="form-group">
-                        <label>Пароль</label>
-                        <input type="password" id="mcPassInput" class="form-input" placeholder="Введи пароль" required minlength="4">
+                        <label class="form-label">Пароль</label>
+                        <input type="password" id="loginPass" class="form-input" placeholder="Введите ваш пароль" required>
                     </div>
-                    <div class="form-group" id="confirmPassGroup" style="display: none;">
-                        <label>Повтори пароль</label>
-                        <input type="password" id="mcPassConfirmInput" class="form-input" placeholder="Повтори пароль">
+                    <button type="submit" class="btn btn-amber" style="width: 100%; padding: 14px;" id="loginSubmitBtn">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span>Войти в профиль</span>
+                    </button>
+                </form>
+
+                <!-- REGISTER FORM -->
+                <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label class="form-label">Твой никнейм в Minecraft</label>
+                        <input type="text" id="regNick" class="form-input" placeholder="Латиница, цифры, от 3 до 16 символов" required minlength="3" maxlength="16">
                     </div>
-                    <button type="submit" class="form-submit" id="authSubmitBtn">Войти в аккаунт</button>
+                    <div class="form-group">
+                        <label class="form-label">Придумай пароль</label>
+                        <input type="password" id="regPass" class="form-input" placeholder="Минимум 4 символа" required minlength="4">
+                    </div>
+                    <button type="submit" class="btn btn-amber" style="width: 100%; padding: 14px;" id="regSubmitBtn">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>Создать аккаунт</span>
+                    </button>
                 </form>
             </div>
 
-            <!-- БЛОК ПРОФИЛЯ ИГРОКА -->
-            <div id="profileSection" class="profile-view" style="display: none;">
-                <img id="profileSkinImg" src="" alt="Skin" class="profile-skin-preview">
-                <h2 id="profileNickTitle" style="font-size: 1.6rem; font-weight: 900; margin-bottom: 6px;"></h2>
-                <div id="profileRoleBadge" class="profile-role-badge"></div>
-
-                <!-- Плашка бана, если аккаунт заблокирован -->
-                <div id="profileBannedBox" class="banned-alert-box" style="display: none;">
-                    <h3 style="color: #ef4444; margin-bottom: 6px;"><i class="fa-solid fa-ban"></i> АККАУНТ ЗАБЛОКИРОВАН</h3>
-                    <p id="profileBanReasonText" style="font-size: 0.9rem;"></p>
-                </div>
-
-                <div class="profile-stats">
-                    <div class="profile-stat-row">
-                        <span>Статус аккаунта:</span>
-                        <span id="profileStatusText" style="color: var(--voice-color);">Активен</span>
+            <!-- LOGGED IN PROFILE VIEW -->
+            <div id="authProfileView" style="display: none;">
+                <!-- Banned Alert Block -->
+                <div class="ban-alert-box" id="profileBanBox" style="display: none;">
+                    <div class="ban-alert-title">
+                        <i class="fa-solid fa-ban"></i>
+                        <span>АККАУНТ ЗАБЛОКИРОВАН</span>
                     </div>
-                    <div class="profile-stat-row">
-                        <span>Дата регистрации:</span>
-                        <span id="profileRegDate">-</span>
-                    </div>
-                    <div class="profile-stat-row">
-                        <span>Сервер IP:</span>
-                        <span>f1.rustix.me:35223</span>
+                    <div style="font-size: 0.9rem;">
+                        Причина блокировки: <strong id="profileBanReasonText">Нарушение правил сервера</strong>
                     </div>
                 </div>
 
-                <div id="profileControlsBox">
-                    <div class="form-group" style="text-align: left;">
-                        <label>Твой город / Империя на сервере</label>
-                        <input type="text" id="profileTownInput" class="form-input" placeholder="Название твоего города или страны" maxlength="32">
+                <div class="profile-card-top">
+                    <img src="https://minotar.net/helm/MHF_Steve/150.png" alt="Skin" class="profile-avatar" id="profileAvatarImg" onerror="this.src='https://minotar.net/helm/MHF_Steve/150.png'">
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 900; margin-bottom: 6px;" id="profileNickDisplay">Player</div>
+                        <div id="profileRoleBadge" class="role-badge role-player" style="margin-bottom: 0;">Игрок THETOWN</div>
                     </div>
-                    <button class="form-submit" onclick="saveProfile()">Сохранить изменения</button>
                 </div>
 
-                <button class="btn-logout" onclick="logoutAccount()"><i class="fa-solid fa-right-from-bracket"></i> Выйти из аккаунта</button>
+                <div class="profile-metaGrid">
+                    <div class="meta-box">
+                        <div class="meta-label">Статус аккаунта</div>
+                        <div class="meta-val" id="profileStatusText" style="color: var(--accent-green);">Активен</div>
+                    </div>
+                    <div class="meta-box">
+                        <div class="meta-label">Дата регистрации</div>
+                        <div class="meta-val" id="profileRegDateText">—</div>
+                    </div>
+                </div>
+
+                <form onsubmit="handleSaveCity(event)">
+                    <div class="form-group">
+                        <label class="form-label">Твой город / Империя на сервере</label>
+                        <input type="text" id="profileCityInput" class="form-input" placeholder="Например: Римская Империя / Токио" maxlength="45">
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button type="submit" class="btn btn-amber" id="profileSaveCityBtn" style="flex: 1;">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>Сохранить</span>
+                        </button>
+                        <button type="button" class="btn btn-red" onclick="handleLogout()">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Выйти</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО АДМИН-ПАНЕЛИ -->
-    <div class="modal-overlay" id="adminModal" onclick="closeAdminOnOutside(event)">
-        <div class="modal-box admin-modal-box">
-            <button class="modal-close" onclick="closeAdminModal()"><i class="fa-solid fa-xmark"></i></button>
-
-            <div class="admin-header-bar">
-                <div>
-                    <h2 style="font-weight: 900; font-size: 1.6rem; display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-shield-halved" style="color: var(--admin-color);"></i> Панель Управления THETOWN
-                    </h2>
-                    <p style="color: var(--text-muted); font-size: 0.88rem;">Доступ: MrLov3n4ik, Vunpos и Sanraizzz</p>
+    <!-- ==========================================
+         MODAL 2: TECH SUPPORT TICKETS
+    =========================================== -->
+    <div class="modal-overlay" id="supportModal" onclick="handleOverlayClick(event, 'supportModal')">
+        <div class="modal-box modal-lg">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-headset" style="color: var(--accent-blue);"></i>
+                    <span>Техническая поддержка THETOWN</span>
                 </div>
-                <button class="btn-refresh-db" onclick="syncAllFromFirebase(true)">
-                    <i class="fa-solid fa-rotate"></i> Обновить базу
+                <button class="modal-close" onclick="closeModal('supportModal')">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
-            <!-- УПРАВЛЕНИЕ СТАТУСОМ СЕРВЕРА -->
-            <div class="admin-status-control">
+            <form onsubmit="handleSubmitTicket(event)" style="margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-color);">
+                <div class="form-group">
+                    <label class="form-label">Ваш никнейм в Minecraft</label>
+                    <input type="text" id="ticketNickInput" class="form-input" placeholder="Введите ваш игровой никнейм" required minlength="3" maxlength="16">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Опишите вашу проблему или вопрос</label>
+                    <textarea id="ticketTextInput" class="form-textarea" placeholder="Подробно опишите проблему со входом, голосовым чатом или игровой вопрос..." required maxlength="600"></textarea>
+                </div>
+                <button type="submit" class="btn btn-blue" id="ticketSubmitBtn" style="width: 100%; padding: 13px;">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Отправить обращение</span>
+                </button>
+            </form>
+
+            <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                    <h4 style="font-size: 1.05rem; font-weight: 800;">Список обращений и ответов администрации</h4>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);" id="ticketsTotalCounter">Всего: 0</span>
+                </div>
+                <div class="tickets-list" id="publicTicketsList">
+                    <!-- Rendered dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL 3: ADMIN PANEL
+    =========================================== -->
+    <div class="modal-overlay" id="adminModal" onclick="handleOverlayClick(event, 'adminModal')">
+        <div class="modal-box modal-xl">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--accent-purple);"></i>
+                    <span>Админ-панель управления THETOWN</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="btn btn-dark btn-sm" onclick="manualRefreshDB()">
+                        <i class="fa-solid fa-arrows-rotate" id="adminRefreshIcon"></i>
+                        <span>Обновить БД</span>
+                    </button>
+                    <button class="modal-close" onclick="closeModal('adminModal')">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Server Status Switcher -->
+            <div class="status-switcher">
                 <div>
-                    <h4 style="font-weight: 800; margin-bottom: 4px;"><i class="fa-solid fa-server"></i> Статус сервера на сайте</h4>
-                    <p style="font-size: 0.82rem; color: var(--text-muted);">Переключи состояние сервера (отображается всем игрокам на главной)</p>
+                    <div style="font-weight: 800; font-size: 0.96rem;">Статус сервера на сайте</div>
+                    <div style="font-size: 0.82rem; color: var(--text-secondary);">Мгновенно меняет индикатор на главном экране для всех посетителей</div>
                 </div>
-                <div class="status-btn-group">
-                    <button id="btnSetOnline" class="btn-status-switch" onclick="setServerStatus('online')">
-                        <span class="status-dot" style="background:#10b981;"></span> Включен
+                <div class="status-switcher-btns">
+                    <button class="btn btn-sm btn-dark" id="statusBtn_online" onclick="setServerStatus('online')">
+                        <i class="fa-solid fa-circle-check" style="color: var(--accent-green);"></i> Включен
                     </button>
-                    <button id="btnSetMaintenance" class="btn-status-switch" onclick="setServerStatus('maintenance')">
-                        <span class="status-dot" style="background:#f59e0b;"></span> На тех. работах
+                    <button class="btn btn-sm btn-dark" id="statusBtn_maintenance" onclick="setServerStatus('maintenance')">
+                        <i class="fa-solid fa-screwdriver-wrench" style="color: var(--accent-amber);"></i> На тех. работах
                     </button>
-                    <button id="btnSetOffline" class="btn-status-switch" onclick="setServerStatus('offline')">
-                        <span class="status-dot" style="background:#ef4444;"></span> Выключен
+                    <button class="btn btn-sm btn-dark" id="statusBtn_offline" onclick="setServerStatus('offline')">
+                        <i class="fa-solid fa-power-off" style="color: var(--accent-red);"></i> Выключен
                     </button>
                 </div>
             </div>
 
-            <div class="admin-stats-cards">
-                <div class="admin-stat-box">
-                    <span>Всего аккаунтов</span>
-                    <strong id="statTotalUsers">0</strong>
+            <!-- Statistics Cards -->
+            <div class="admin-stats-grid">
+                <div class="stat-box">
+                    <div class="meta-label">Всего аккаунтов</div>
+                    <div class="stat-num" id="statTotalUsers" style="color: var(--text-primary);">0</div>
                 </div>
-                <div class="admin-stat-box">
-                    <span>Активных игроков</span>
-                    <strong id="statActiveUsers" style="color: var(--voice-color);">0</strong>
+                <div class="stat-box">
+                    <div class="meta-label">Активных игроков</div>
+                    <div class="stat-num" id="statActiveUsers" style="color: var(--accent-green);">0</div>
                 </div>
-                <div class="admin-stat-box">
-                    <span>Заблокировано</span>
-                    <strong id="statBannedUsers" style="color: var(--yt-color);">0</strong>
+                <div class="stat-box">
+                    <div class="meta-label">Заблокировано</div>
+                    <div class="stat-num" id="statBannedUsers" style="color: var(--accent-red);">0</div>
                 </div>
-                <div class="admin-stat-box">
-                    <span>Обращений в ТП</span>
-                    <strong id="statTotalTickets" style="color: var(--support-color);">0</strong>
+                <div class="stat-box">
+                    <div class="meta-label">Обращений в ТП</div>
+                    <div class="stat-num" id="statTotalTickets" style="color: var(--accent-blue);">0</div>
                 </div>
             </div>
 
-            <!-- ВКЛАДКИ АДМИНКИ: ИГРОКИ / ТИКЕТЫ -->
-            <div class="auth-tabs" style="margin-bottom: 18px;">
-                <button class="auth-tab active" id="adminTabUsersBtn" onclick="switchAdminView('users')">
+            <!-- Admin Tabs -->
+            <div class="tabs-bar">
+                <button class="tab-btn active" id="adminTabPlayersBtn" onclick="switchAdminTab('players')">
                     <i class="fa-solid fa-users"></i> Игроки
                 </button>
-                <button class="auth-tab" id="adminTabTicketsBtn" onclick="switchAdminView('tickets')">
-                    <i class="fa-solid fa-headset"></i> Тикеты техподдержки
+                <button class="tab-btn" id="adminTabTicketsBtn" onclick="switchAdminTab('tickets')">
+                    <i class="fa-solid fa-ticket"></i> Тикеты техподдержки
                 </button>
             </div>
 
-            <!-- СПИСОК ИГРОКОВ -->
-            <div id="adminUsersSection">
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <input type="text" id="adminSearchInput" class="form-input" placeholder="Поиск игрока по нику или городу..." oninput="renderAdminUsersList()">
+            <!-- TAB 1: PLAYERS -->
+            <div id="adminPlayersSection">
+                <div class="form-group">
+                    <input type="text" id="adminPlayerSearch" class="form-input" placeholder="🔍 Поиск игрока по нику или названию города / Империи..." oninput="renderAdminPlayers()">
                 </div>
-                <div class="admin-user-list" id="adminUsersContainer"></div>
+                <div class="admin-list" id="adminPlayersList">
+                    <!-- Rendered dynamically -->
+                </div>
             </div>
 
-            <!-- СПИСОК ОБРАЩЕНИЙ ТЕХПОДДЕРЖКИ -->
+            <!-- TAB 2: TICKETS -->
             <div id="adminTicketsSection" style="display: none;">
-                <div class="admin-user-list" id="adminTicketsContainer"></div>
+                <div class="admin-list" id="adminTicketsList">
+                    <!-- Rendered dynamically -->
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- ПОДВАЛ -->
-    <footer>
-        <div class="logo-text footer-logo">THETOWN</div>
-        <p>© 2025 THETOWN Minecraft Server. Все права защищены.</p>
-        <p style="margin-top: 6px; font-size: 0.8rem; opacity: 0.6;">Not an official Minecraft product. We are in no way affiliated with or endorsed by Mojang Synergies AB or Microsoft.</p>
-    </footer>
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ВСПЛЫВАЮЩЕЕ УВЕДОМЛЕНИЕ -->
-    <div id="toast" class="toast">
-        <i class="fa-solid fa-circle-check"></i> <span id="toastMsg">IP сервера скопирован!</span>
-    </div>
+    <!-- JAVASCRIPT -->
     <script>
-        // =========================================================================
-        // НОВАЯ ПРЯМАЯ СИСТЕМА БАЗЫ ДАННЫХ FIREBASE (REST API В 1 ПОТОК)
-        // =========================================================================
-        const FIREBASE_URL = "https://thetown-6fbfa-default-rtdb.firebaseio.com";
-        const ADMINS = ["mrlov3n4ik", "vunpos", "sanraizzz"];
+        /* =========================================================
+           1. CONFIGURATION & CONSTANTS
+        ========================================================= */
+        const FIREBASE_BASE_URL = 'https://thetown-6fbfa-default-rtdb.firebaseio.com';
+        const SERVER_IP = 'f1.rustix.me:35223';
+        const LOCAL_STORAGE_USER_KEY = 'thetown_current_user';
 
-        let cachedUsers = {};
-        let cachedTickets = {};
-        let currentServerStatus = "online";
-        let currentAuthMode = "login";
+        const ADMINS_MAP = {
+            'vunpos': {
+                displayNick: 'Vunpos',
+                roleName: 'Создатель сервера',
+                roleClass: 'role-creator',
+                icon: 'fa-crown'
+            },
+            'mrlov3n4ik': {
+                displayNick: 'MrLov3n4ik',
+                roleName: 'Контент-креатор',
+                roleClass: 'role-media',
+                icon: 'fa-video'
+            },
+            'sanraizzz': {
+                displayNick: 'Sanraizzz',
+                roleName: 'Администратор • Техподдержка',
+                roleClass: 'role-admin',
+                icon: 'fa-screwdriver-wrench'
+            }
+        };
 
-        function isAdminNick(nick) {
+        // Local state synchronized with Firebase
+        let dbState = {
+            users: {},
+            tickets: {},
+            serverStatus: 'online'
+        };
+        let lastSnapshotHash = '';
+        let currentUserNickLower = localStorage.getItem(LOCAL_STORAGE_USER_KEY) || null;
+
+        /* =========================================================
+           2. HELPER FUNCTIONS
+        ========================================================= */
+        function normalizeKey(nick) {
+            return String(nick || '')
+                .trim()
+                .toLowerCase()
+                .replace(/[.#$\[\]\/]/g, '_');
+        }
+
+        function isAdmin(nick) {
             if (!nick) return false;
-            return ADMINS.includes(nick.toLowerCase());
+            return Boolean(ADMINS_MAP[normalizeKey(nick)]);
         }
 
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            if (!toast || !toastMsg) return;
-            toast.style.background = isError ? '#ef4444' : '#10b981';
-            toast.style.color = isError ? '#fff' : '#000';
-            toastMsg.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+        function getRoleInfo(nick) {
+            const key = normalizeKey(nick);
+            if (ADMINS_MAP[key]) {
+                return ADMINS_MAP[key];
+            }
+            return {
+                displayNick: nick,
+                roleName: 'Игрок THETOWN',
+                roleClass: 'role-player',
+                icon: 'fa-user'
+            };
         }
 
-        function copyIP() {
-            const ip = "f1.rustix.me:35223";
-            navigator.clipboard.writeText(ip).then(() => {
-                showToast("IP скопирован: " + ip);
+        function escapeHTML(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function formatDateNow() {
+            const now = new Date();
+            const d = String(now.getDate()).padStart(2, '0');
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const y = now.getFullYear();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            return `${d}.${m}.${y} ${hh}:${mm}`;
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+
+            let iconClass = 'fa-circle-info';
+            let iconColor = 'var(--accent-blue)';
+            if (type === 'success') {
+                iconClass = 'fa-circle-check';
+                iconColor = 'var(--accent-green)';
+            } else if (type === 'error') {
+                iconClass = 'fa-circle-exclamation';
+                iconColor = 'var(--accent-red)';
+            }
+
+            toast.innerHTML = `
+                <i class="fa-solid ${iconClass}" style="font-size: 1.25rem; color: ${iconColor};"></i>
+                <div style="font-size: 0.9rem; font-weight: 600;">${escapeHTML(message)}</div>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(40px)';
+                toast.style.transition = 'all 0.25s ease';
+                setTimeout(() => toast.remove(), 260);
+            }, 3400);
+        }
+
+        function copyServerIP() {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(SERVER_IP).then(() => {
+                    showToast(`IP скопирован: ${SERVER_IP}`, 'success');
+                }).catch(() => fallbackCopyIP());
+            } else {
+                fallbackCopyIP();
+            }
+        }
+
+        function fallbackCopyIP() {
+            const temp = document.createElement('input');
+            temp.value = SERVER_IP;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            temp.remove();
+            showToast(`IP скопирован: ${SERVER_IP}`, 'success');
+        }
+
+        /* =========================================================
+           3. NAVIGATION & MODALS
+        ========================================================= */
+        function toggleMobileNav() {
+            document.getElementById('navMenu').classList.toggle('open');
+        }
+
+        function closeMobileNav() {
+            document.getElementById('navMenu').classList.remove('open');
+        }
+
+        function openModal(modalId) {
+            if (modalId === 'adminModal') {
+                if (!currentUserNickLower || !isAdmin(currentUserNickLower)) {
+                    showToast('Доступ разрешён только руководству THETOWN!', 'error');
+                    return;
+                }
+                renderAdminPanel();
+            }
+            if (modalId === 'accountModal') {
+                renderAccountModal();
+            }
+            if (modalId === 'supportModal') {
+                const currentUser = currentUserNickLower ? dbState.users[currentUserNickLower] : null;
+                const nickInput = document.getElementById('ticketNickInput');
+                if (currentUser && !nickInput.value) {
+                    nickInput.value = currentUser.nick;
+                }
+                renderPublicTickets();
+            }
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function handleOverlayClick(e, modalId) {
+            if (e.target.id === modalId) {
+                closeModal(modalId);
+            }
+        }
+
+        function switchAuthTab(tab) {
+            const isLogin = tab === 'login';
+            document.getElementById('tabLoginBtn').classList.toggle('active', isLogin);
+            document.getElementById('tabRegisterBtn').classList.toggle('active', !isLogin);
+            document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block';
+        }
+
+        function switchAdminTab(tab) {
+            const isPlayers = tab === 'players';
+            document.getElementById('adminTabPlayersBtn').classList.toggle('active', isPlayers);
+            document.getElementById('adminTabTicketsBtn').classList.toggle('active', !isPlayers);
+            document.getElementById('adminPlayersSection').style.display = isPlayers ? 'block' : 'none';
+            document.getElementById('adminTicketsSection').style.display = isPlayers ? 'none' : 'block';
+        }
+
+        /* =========================================================
+           4. FIREBASE REST API (PURE PATHS, NO QUERY PARAMS)
+        ========================================================= */
+        async function syncAllFromFirebase(forceRender = false) {
+            try {
+                const response = await fetch(`${FIREBASE_BASE_URL}/.json`, {
+                    method: 'GET',
+                    cache: 'no-store'
+                });
+
+                if (!response.ok) return;
+
+                const data = await response.json() || {};
+                const nextUsers = data.users || {};
+                const nextTickets = data.tickets || {};
+                const nextStatus = (data.settings && data.settings.serverStatus) ? data.settings.serverStatus : 'online';
+
+                const snapshotHash = JSON.stringify({
+                    u: nextUsers,
+                    t: nextTickets,
+                    s: nextStatus
+                });
+
+                dbState.users = nextUsers;
+                dbState.tickets = nextTickets;
+                dbState.serverStatus = nextStatus;
+
+                // If logged-in user was deleted from DB by an admin
+                if (currentUserNickLower && !dbState.users[currentUserNickLower]) {
+                    currentUserNickLower = null;
+                    localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+                    closeModal('adminModal');
+                }
+
+                if (forceRender || snapshotHash !== lastSnapshotHash) {
+                    lastSnapshotHash = snapshotHash;
+                    updateAllUI();
+                }
+            } catch (err) {
+                console.error('Ошибка синхронизации с Firebase:', err);
+            }
+        }
+
+        async function manualRefreshDB() {
+            const icon = document.getElementById('adminRefreshIcon');
+            if (icon) icon.classList.add('fa-spin');
+            await syncAllFromFirebase(true);
+            setTimeout(() => {
+                if (icon) icon.classList.remove('fa-spin');
+            }, 400);
+            showToast('База данных синхронизирована', 'info');
+        }
+
+        /* =========================================================
+           5. UI RENDERING
+        ========================================================= */
+        function updateAllUI() {
+            renderServerStatusUI();
+            renderHeaderUserUI();
+            renderAccountModal();
+            renderPublicTickets();
+            renderAdminPanel();
+        }
+
+        function renderServerStatusUI() {
+            const badge = document.getElementById('heroStatusBadge');
+            const text = document.getElementById('heroStatusText');
+            const status = dbState.serverStatus || 'online';
+
+            badge.className = 'badge-pill';
+            if (status === 'maintenance') {
+                badge.classList.add('status-maintenance');
+                text.textContent = 'На тех. работах';
+            } else if (status === 'offline') {
+                badge.classList.add('status-offline');
+                text.textContent = 'Сервер выключен';
+            } else {
+                badge.classList.add('status-online');
+                text.textContent = 'Сервер включен';
+            }
+
+            // Highlight active status button in Admin Panel
+            ['online', 'maintenance', 'offline'].forEach(st => {
+                const btn = document.getElementById(`statusBtn_${st}`);
+                if (btn) {
+                    btn.style.borderColor = (st === status) ? 'var(--accent-amber)' : 'var(--border-color)';
+                    btn.style.background = (st === status) ? 'rgba(245, 158, 11, 0.14)' : 'var(--bg-card)';
+                }
             });
         }
 
-        // --- ЯДРО ЗАПРОСОВ К FIREBASE (БЕЗ ЗАПРЕЩЕННЫХ ПАРАМЕТРОВ) ---
-        async function dbRequest(path, method = "GET", data = null) {
-            const cleanPath = path ? `/${path}.json` : `/.json`;
-            const options = {
-                method: method,
-                headers: { "Content-Type": "application/json" }
-            };
-            if (data !== null) {
-                options.body = JSON.stringify(data);
-            }
-            const response = await fetch(`${FIREBASE_URL}${cleanPath}`, options);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-            return await response.json();
-        }
+        function renderHeaderUserUI() {
+            const accountBtn = document.getElementById('headerAccountBtn');
+            const adminBtn = document.getElementById('headerAdminBtn');
+            const user = currentUserNickLower ? dbState.users[currentUserNickLower] : null;
 
-        // --- ПОЛНАЯ СИНХРОНИЗАЦИЯ С БАЗОЙ В 1 ЗАПРОС ---
-        async function syncAllFromFirebase(showNotify = false) {
-            try {
-                const rootData = await dbRequest("", "GET");
-                if (rootData && typeof rootData === "object") {
-                    cachedUsers = rootData.users || {};
-                    cachedTickets = rootData.tickets || {};
-                    currentServerStatus = (rootData.settings && rootData.settings.serverStatus) ? rootData.settings.serverStatus : "online";
-                } else {
-                    cachedUsers = {};
-                    cachedTickets = {};
-                    currentServerStatus = "online";
-                }
-
-                applyServerStatusUI(currentServerStatus);
-                updateNavButton();
-                renderAdminUsersList();
-                renderAdminTicketsList();
-                renderMyTickets();
-
-                // Обновляем открытый профиль, если игрока забанили/разбанили
-                const currentNick = getCurrentUser();
-                if (currentNick && cachedUsers[currentNick]) {
-                    const profileSec = document.getElementById('profileSection');
-                    if (profileSec && profileSec.style.display === 'block') {
-                        renderProfile(cachedUsers[currentNick]);
-                    }
-                }
-
-                if (showNotify) {
-                    showToast("База данных успешно обновлена!");
-                }
-            } catch (err) {
-                console.error("Ошибка БД:", err);
-                if (showNotify) {
-                    showToast("Ошибка доступа к БД! Проверь Rules в Firebase.", true);
-                }
-            }
-        }
-
-        // --- СТАТУС СЕРВЕРА ---
-        function applyServerStatusUI(status) {
-            const badge = document.getElementById('serverStatusBadge');
-            const text = document.getElementById('serverStatusText');
-            if (badge && text) {
-                badge.className = 'status-badge';
-                if (status === 'maintenance') {
-                    badge.classList.add('status-maintenance');
-                    text.textContent = 'На тех. работах';
-                } else if (status === 'offline') {
-                    badge.classList.add('status-offline');
-                    text.textContent = 'Сервер выключен';
-                } else {
-                    badge.classList.add('status-online');
-                    text.textContent = 'Сервер включен';
-                }
-            }
-
-            const btnOnline = document.getElementById('btnSetOnline');
-            const btnMaint = document.getElementById('btnSetMaintenance');
-            const btnOff = document.getElementById('btnSetOffline');
-            if (btnOnline && btnMaint && btnOff) {
-                btnOnline.className = 'btn-status-switch' + (status === 'online' ? ' active-online' : '');
-                btnMaint.className = 'btn-status-switch' + (status === 'maintenance' ? ' active-maintenance' : '');
-                btnOff.className = 'btn-status-switch' + (status === 'offline' ? ' active-offline' : '');
-            }
-        }
-
-        async function setServerStatus(status) {
-            const currentNick = getCurrentUser();
-            if (!isAdminNick(currentNick)) return;
-
-            try {
-                await dbRequest("settings/serverStatus", "PUT", status);
-                currentServerStatus = status;
-                applyServerStatusUI(status);
-                const names = { online: "Включен", maintenance: "На тех. работах", offline: "Выключен" };
-                showToast(`Статус сервера: ${names[status]}`);
-            } catch (e) {
-                showToast("Не удалось сохранить статус в БД!", true);
-            }
-        }
-
-        // --- АВТОРИЗАЦИЯ И РЕГИСТРАЦИЯ ---
-        function getCurrentUser() {
-            return localStorage.getItem('thetown_current_user');
-        }
-
-        function setCurrentUser(nick) {
-            if (nick) {
-                localStorage.setItem('thetown_current_user', nick.toLowerCase());
+            if (user) {
+                accountBtn.innerHTML = `
+                    <img src="https://minotar.net/helm/${encodeURIComponent(user.nick)}/150.png" alt="${escapeHTML(user.nick)}" onerror="this.src='https://minotar.net/helm/MHF_Steve/150.png'">
+                    <span>${escapeHTML(user.nick)}</span>
+                `;
+                adminBtn.style.display = isAdmin(user.nick) ? 'inline-flex' : 'none';
             } else {
-                localStorage.removeItem('thetown_current_user');
+                accountBtn.innerHTML = `
+                    <i class="fa-solid fa-user"></i>
+                    <span>Аккаунт</span>
+                `;
+                adminBtn.style.display = 'none';
             }
-            updateNavButton();
         }
 
-        function updateNavButton() {
-            const currentNick = getCurrentUser();
-            const btn = document.getElementById('navAccountBtn');
-            const adminBtn = document.getElementById('navAdminBtn');
-            if (!btn || !adminBtn) return;
+        function renderAccountModal() {
+            const guestView = document.getElementById('authGuestView');
+            const profileView = document.getElementById('authProfileView');
+            const user = currentUserNickLower ? dbState.users[currentUserNickLower] : null;
 
-            if (!currentNick) {
-                btn.innerHTML = `<i class="fa-solid fa-user"></i> <span>Аккаунт</span>`;
-                adminBtn.style.display = 'none';
+            if (!user) {
+                guestView.style.display = 'block';
+                profileView.style.display = 'none';
                 return;
             }
 
-            const user = cachedUsers[currentNick.toLowerCase()];
-            const displayNick = user ? user.displayNick : currentNick;
-            btn.innerHTML = `<img src="https://minotar.net/helm/${displayNick}/64.png" alt="${displayNick}"> <span>${displayNick}</span>`;
-            adminBtn.style.display = isAdminNick(displayNick) ? 'inline-flex' : 'none';
-        }
+            guestView.style.display = 'none';
+            profileView.style.display = 'block';
 
-        function switchAuthTab(mode) {
-            currentAuthMode = mode;
-            document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
-            document.getElementById('tabRegister').classList.toggle('active', mode === 'register');
-            document.getElementById('confirmPassGroup').style.display = mode === 'register' ? 'block' : 'none';
-            document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Войти в аккаунт' : 'Создать аккаунт';
-        }
-
-        async function openAccountModal() {
-            const modal = document.getElementById('accountModal');
-            modal.classList.add('active');
-
-            await syncAllFromFirebase(false);
-            const currentNick = getCurrentUser();
-
-            if (currentNick && cachedUsers[currentNick.toLowerCase()]) {
-                renderProfile(cachedUsers[currentNick.toLowerCase()]);
-            } else {
-                document.getElementById('authSection').style.display = 'block';
-                document.getElementById('profileSection').style.display = 'none';
-            }
-        }
-
-        function closeAccountModal() {
-            document.getElementById('accountModal').classList.remove('active');
-        }
-
-        function closeModalOnOutside(e) {
-            if (e.target.id === 'accountModal') closeAccountModal();
-        }
-
-        async function handleAuth(e) {
-            e.preventDefault();
-            const nick = document.getElementById('mcNickInput').value.trim();
-            const pass = document.getElementById('mcPassInput').value;
-            const passConfirm = document.getElementById('mcPassConfirmInput').value;
-            const lowerNick = nick.toLowerCase();
-            const submitBtn = document.getElementById('authSubmitBtn');
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = "Подождите...";
-
-            try {
-                // Проверяем игрока напрямую в Firebase
-                const existingUser = await dbRequest(`users/${lowerNick}`, "GET");
-
-                if (currentAuthMode === 'register') {
-                    if (pass !== passConfirm) {
-                        showToast("Пароли не совпадают!", true);
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Создать аккаунт';
-                        return;
-                    }
-                    if (existingUser) {
-                        showToast("Этот никнейм уже занят!", true);
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Создать аккаунт';
-                        return;
-                    }
-
-                    const newUser = {
-                        displayNick: nick,
-                        password: pass,
-                        regDate: new Date().toLocaleDateString('ru-RU'),
-                        town: "",
-                        banned: false,
-                        banReason: ""
-                    };
-
-                    // Записываем напрямую в Firebase
-                    await dbRequest(`users/${lowerNick}`, "PUT", newUser);
-                    cachedUsers[lowerNick] = newUser;
-                    setCurrentUser(lowerNick);
-                    renderProfile(newUser);
-                    renderAdminUsersList();
-                    showToast("Аккаунт зарегистрирован и сохранён в БД!");
-                } else {
-                    if (!existingUser || existingUser.password !== pass) {
-                        showToast("Неверный никнейм или пароль!", true);
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Войти в аккаунт';
-                        return;
-                    }
-                    cachedUsers[lowerNick] = existingUser;
-                    setCurrentUser(lowerNick);
-                    renderProfile(existingUser);
-                    showToast("Добро пожаловать, " + existingUser.displayNick + "!");
-                }
-                document.getElementById('authForm').reset();
-            } catch (err) {
-                console.error(err);
-                showToast("Ошибка записи в Firebase! Проверь вкладку Rules.", true);
-            }
-
-            submitBtn.disabled = false;
-            submitBtn.textContent = currentAuthMode === 'login' ? 'Войти в аккаунт' : 'Создать аккаунт';
-        }
-
-        function renderProfile(user) {
-            document.getElementById('authSection').style.display = 'none';
-            document.getElementById('profileSection').style.display = 'block';
-
-            document.getElementById('profileSkinImg').src = `https://minotar.net/helm/${user.displayNick}/150.png`;
-            document.getElementById('profileNickTitle').textContent = user.displayNick;
-            document.getElementById('profileRegDate').textContent = user.regDate || "-";
-            document.getElementById('profileTownInput').value = user.town || "";
+            const role = getRoleInfo(user.nick);
+            document.getElementById('profileAvatarImg').src = `https://minotar.net/helm/${encodeURIComponent(user.nick)}/150.png`;
+            document.getElementById('profileNickDisplay').textContent = user.nick;
 
             const roleBadge = document.getElementById('profileRoleBadge');
-            const lower = user.displayNick.toLowerCase();
+            roleBadge.className = `role-badge ${role.roleClass}`;
+            roleBadge.innerHTML = `<i class="fa-solid ${role.icon}"></i> ${escapeHTML(role.roleName)}`;
 
-            if (lower === 'mrlov3n4ik') {
-                roleBadge.className = 'profile-role-badge role-creator';
-                roleBadge.innerHTML = '<i class="fa-solid fa-crown"></i> Создатель сервера';
-            } else if (lower === 'vunpos') {
-                roleBadge.className = 'profile-role-badge role-cofounder';
-                roleBadge.innerHTML = '<i class="fa-solid fa-star"></i> Сооснователь • Контент-креатор';
-            } else if (lower === 'sanraizzz') {
-                roleBadge.className = 'profile-role-badge role-support';
-                roleBadge.innerHTML = '<i class="fa-solid fa-headset"></i> Администратор • Техподдержка';
-            } else {
-                roleBadge.className = 'profile-role-badge';
-                roleBadge.style.background = 'rgba(255,255,255,0.08)';
-                roleBadge.style.color = '#d1d5db';
-                roleBadge.innerHTML = '<i class="fa-solid fa-user-shield"></i> Игрок THETOWN';
-            }
+            document.getElementById('profileRegDateText').textContent = user.createdAt || '—';
 
-            const bannedBox = document.getElementById('profileBannedBox');
+            const banBox = document.getElementById('profileBanBox');
             const statusText = document.getElementById('profileStatusText');
-            const controlsBox = document.getElementById('profileControlsBox');
+            const cityInput = document.getElementById('profileCityInput');
+            const saveCityBtn = document.getElementById('profileSaveCityBtn');
+
+            // Only update city input value if the user isn't currently typing in it
+            if (document.activeElement !== cityInput) {
+                cityInput.value = user.city || '';
+            }
 
             if (user.banned) {
-                bannedBox.style.display = 'block';
-                document.getElementById('profileBanReasonText').textContent = `Причина: ${user.banReason || "Нарушение правил проекта"}`;
+                banBox.style.display = 'block';
+                document.getElementById('profileBanReasonText').textContent = user.banReason || 'Нарушение правил сервера';
                 statusText.textContent = 'Заблокирован';
-                statusText.style.color = '#ef4444';
-                controlsBox.style.display = 'none';
+                statusText.style.color = 'var(--accent-red)';
+                cityInput.disabled = true;
+                saveCityBtn.disabled = true;
+                saveCityBtn.style.opacity = '0.5';
             } else {
-                bannedBox.style.display = 'none';
+                banBox.style.display = 'none';
                 statusText.textContent = 'Активен';
-                statusText.style.color = '#10b981';
-                controlsBox.style.display = 'block';
+                statusText.style.color = 'var(--accent-green)';
+                cityInput.disabled = false;
+                saveCityBtn.disabled = false;
+                saveCityBtn.style.opacity = '1';
             }
         }
 
-        async function saveProfile() {
-            const currentNick = getCurrentUser();
-            if (!currentNick) return;
+        function renderPublicTickets() {
+            const container = document.getElementById('publicTicketsList');
+            const counter = document.getElementById('ticketsTotalCounter');
+            if (!container) return;
 
-            const lower = currentNick.toLowerCase();
-            const user = cachedUsers[lower];
-            if (user && !user.banned) {
-                user.town = document.getElementById('profileTownInput').value.trim();
-                try {
-                    await dbRequest(`users/${lower}`, "PUT", user);
-                    cachedUsers[lower] = user;
-                    renderAdminUsersList();
-                    showToast("Город сохранён в базу данных!");
-                } catch (e) {
-                    showToast("Ошибка сохранения!", true);
-                }
+            const ticketsArr = Object.values(dbState.tickets || {}).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            counter.textContent = `Всего: ${ticketsArr.length}`;
+
+            if (ticketsArr.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 32px; color: var(--text-muted);">
+                        <i class="fa-solid fa-inbox" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                        Обращений пока нет. Если у вас возник вопрос — напишите нам!
+                    </div>
+                `;
+                return;
             }
+
+            container.innerHTML = ticketsArr.map(t => {
+                const hasReply = Boolean(t.reply && String(t.reply).trim());
+                const statusBadge = hasReply
+                    ? `<span class="role-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); margin: 0;"><i class="fa-solid fa-check"></i> Ответ получен</span>`
+                    : `<span class="role-badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); margin: 0;"><i class="fa-solid fa-clock"></i> Ожидает ответа</span>`;
+
+                return `
+                    <div class="ticket-item">
+                        <div class="ticket-top">
+                            <div class="user-mini">
+                                <img src="https://minotar.net/helm/${encodeURIComponent(t.nick || 'Steve')}/150.png" alt="Avatar" onerror="this.src='https://minotar.net/helm/MHF_Steve/150.png'">
+                                <div>
+                                    <div style="font-weight: 800; font-size: 0.96rem;">${escapeHTML(t.nick)}</div>
+                                    <div style="font-size: 0.76rem; color: var(--text-muted);">${escapeHTML(t.createdAt || '')}</div>
+                                </div>
+                            </div>
+                            ${statusBadge}
+                        </div>
+                        <div class="ticket-text">${escapeHTML(t.text)}</div>
+                        ${hasReply ? `
+                            <div class="ticket-reply">
+                                <div class="ticket-reply-head">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <span>Ответ от администратора ${escapeHTML(t.repliedBy || 'THETOWN')}:</span>
+                                </div>
+                                <div style="font-size: 0.9rem; color: var(--text-primary); white-space: pre-wrap;">${escapeHTML(t.reply)}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
         }
 
-        function logoutAccount() {
-            setCurrentUser(null);
-            document.getElementById('profileSection').style.display = 'none';
-            document.getElementById('authSection').style.display = 'block';
-            showToast("Вы вышли из аккаунта");
-        }
-
-        // --- ТЕХПОДДЕРЖКА ---
-        async function openSupportModal() {
-            const modal = document.getElementById('supportModal');
-            const currentNick = getCurrentUser();
-            const nickInput = document.getElementById('supportNickInput');
-            if (currentNick && cachedUsers[currentNick]) {
-                nickInput.value = cachedUsers[currentNick].displayNick;
-            }
-            modal.classList.add('active');
-            await syncAllFromFirebase(false);
-        }
-
-        function closeSupportModal() {
-            document.getElementById('supportModal').classList.remove('active');
-        }
-
-        function closeSupportOnOutside(e) {
-            if (e.target.id === 'supportModal') closeSupportModal();
-        }
-
-        async function submitSupportTicket(e) {
+        /* =========================================================
+           6. AUTHENTICATION & PROFILE ACTIONS
+        ========================================================= */
+        async function handleRegister(e) {
             e.preventDefault();
-            const nick = document.getElementById('supportNickInput').value.trim();
-            const msg = document.getElementById('supportMsgInput').value.trim();
-            if (!nick || !msg) return;
+            const nickRaw = document.getElementById('regNick').value.trim();
+            const passRaw = document.getElementById('regPass').value;
 
-            const ticketId = 't_' + Date.now();
-            const ticketData = {
+            if (!/^[a-zA-Z0-9_]{3,16}$/.test(nickRaw)) {
+                showToast('Ник должен содержать от 3 до 16 символов (латиница, цифры, _)', 'error');
+                return;
+            }
+
+            const lowerNick = normalizeKey(nickRaw);
+            const btn = document.getElementById('regSubmitBtn');
+            btn.disabled = true;
+
+            try {
+                // Check if user already exists
+                const checkRes = await fetch(`${FIREBASE_BASE_URL}/users/${lowerNick}.json`, {
+                    method: 'GET',
+                    cache: 'no-store'
+                });
+                const existing = await checkRes.json();
+
+                if (existing && existing.nick) {
+                    showToast('Этот игровой никнейм уже зарегистрирован!', 'error');
+                    btn.disabled = false;
+                    return;
+                }
+
+                const roleInfo = getRoleInfo(nickRaw);
+                const finalDisplayNick = isAdmin(nickRaw) ? roleInfo.displayNick : nickRaw;
+
+                const newUserObj = {
+                    nick: finalDisplayNick,
+                    password: passRaw,
+                    city: 'Не указан',
+                    createdAt: formatDateNow(),
+                    banned: false,
+                    banReason: ''
+                };
+
+                const putRes = await fetch(`${FIREBASE_BASE_URL}/users/${lowerNick}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newUserObj)
+                });
+
+                if (!putRes.ok) throw new Error('Failed to register');
+
+                dbState.users[lowerNick] = newUserObj;
+                currentUserNickLower = lowerNick;
+                localStorage.setItem(LOCAL_STORAGE_USER_KEY, lowerNick);
+
+                document.getElementById('registerForm').reset();
+                updateAllUI();
+                showToast(`Добро пожаловать на THETOWN, ${finalDisplayNick}!`, 'success');
+            } catch (err) {
+                showToast('Ошибка соединения с базой данных', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const nickRaw = document.getElementById('loginNick').value.trim();
+            const passRaw = document.getElementById('loginPass').value;
+            const lowerNick = normalizeKey(nickRaw);
+
+            const btn = document.getElementById('loginSubmitBtn');
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/users/${lowerNick}.json`, {
+                    method: 'GET',
+                    cache: 'no-store'
+                });
+                const user = await res.json();
+
+                if (!user || !user.nick) {
+                    showToast('Аккаунт с таким никнеймом не найден!', 'error');
+                    btn.disabled = false;
+                    return;
+                }
+
+                if (String(user.password) !== String(passRaw)) {
+                    showToast('Неверный пароль!', 'error');
+                    btn.disabled = false;
+                    return;
+                }
+
+                dbState.users[lowerNick] = user;
+                currentUserNickLower = lowerNick;
+                localStorage.setItem(LOCAL_STORAGE_USER_KEY, lowerNick);
+
+                document.getElementById('loginForm').reset();
+                updateAllUI();
+                showToast(`Вы вошли как ${user.nick}`, 'success');
+            } catch (err) {
+                showToast('Ошибка при входе в аккаунт', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function handleSaveCity(e) {
+            e.preventDefault();
+            if (!currentUserNickLower || !dbState.users[currentUserNickLower]) return;
+
+            const user = dbState.users[currentUserNickLower];
+            if (user.banned) {
+                showToast('Ваш аккаунт заблокирован, редактирование недоступно!', 'error');
+                return;
+            }
+
+            const newCity = document.getElementById('profileCityInput').value.trim() || 'Не указан';
+            const updatedUser = { ...user, city: newCity };
+
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/users/${currentUserNickLower}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedUser)
+                });
+                if (!res.ok) throw new Error('Save error');
+
+                dbState.users[currentUserNickLower] = updatedUser;
+                updateAllUI();
+                showToast('Город / Империя успешно сохранены!', 'success');
+            } catch (err) {
+                showToast('Не удалось сохранить изменения', 'error');
+            }
+        }
+
+        function handleLogout() {
+            currentUserNickLower = null;
+            localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+            updateAllUI();
+            showToast('Вы вышли из аккаунта', 'info');
+        }
+
+        /* =========================================================
+           7. SUPPORT TICKET SUBMISSION
+        ========================================================= */
+        async function handleSubmitTicket(e) {
+            e.preventDefault();
+            const nick = document.getElementById('ticketNickInput').value.trim();
+            const text = document.getElementById('ticketTextInput').value.trim();
+
+            if (!nick || !text) return;
+
+            const btn = document.getElementById('ticketSubmitBtn');
+            btn.disabled = true;
+
+            const ticketId = 't_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+            const newTicket = {
                 id: ticketId,
                 nick: nick,
-                message: msg,
-                date: new Date().toLocaleString('ru-RU'),
-                reply: "",
-                repliedBy: ""
+                text: text,
+                createdAt: formatDateNow(),
+                timestamp: Date.now(),
+                reply: '',
+                repliedBy: ''
             };
 
             try {
-                await dbRequest(`tickets/${ticketId}`, "PUT", ticketData);
-                cachedTickets[ticketId] = ticketData;
-                document.getElementById('supportMsgInput').value = '';
-                renderMyTickets();
-                renderAdminTicketsList();
-                renderAdminUsersList();
-                showToast("Обращение отправлено в техподдержку!");
+                const res = await fetch(`${FIREBASE_BASE_URL}/tickets/${ticketId}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newTicket)
+                });
+
+                if (!res.ok) throw new Error('Ticket submit failed');
+
+                dbState.tickets[ticketId] = newTicket;
+                document.getElementById('ticketTextInput').value = '';
+                updateAllUI();
+                showToast('Ваше обращение отправлено в техподдержку!', 'success');
             } catch (err) {
-                showToast("Не удалось отправить тикет в БД!", true);
+                showToast('Ошибка при отправке обращения', 'error');
+            } finally {
+                btn.disabled = false;
             }
         }
 
-        function renderMyTickets() {
-            const container = document.getElementById('myTicketsContainer');
-            if (!container) return;
+        /* =========================================================
+           8. ADMIN PANEL LOGIC & ACTIONS
+        ========================================================= */
+        function renderAdminPanel() {
+            if (!currentUserNickLower || !isAdmin(currentUserNickLower)) return;
 
-            const keys = Object.keys(cachedTickets).sort().reverse();
-            if (keys.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">Пока нет обращений.</p>`;
-                return;
-            }
+            const usersArr = Object.values(dbState.users || {});
+            const ticketsArr = Object.values(dbState.tickets || {});
+            const bannedCount = usersArr.filter(u => u && u.banned).length;
+            const activeCount = usersArr.length - bannedCount;
 
-            container.innerHTML = keys.map(id => {
-                const t = cachedTickets[id];
-                if (!t) return '';
-                return `
-                    <div class="ticket-card">
-                        <div class="ticket-header">
-                            <strong><i class="fa-solid fa-user"></i> ${t.nick}</strong>
-                            <span style="color: var(--text-muted); font-size: 0.78rem;">${t.date}</span>
-                        </div>
-                        <p style="font-size: 0.9rem;">${t.message}</p>
-                        ${t.reply ? `
-                            <div class="ticket-reply-box">
-                                <strong style="color: var(--support-color);"><i class="fa-solid fa-headset"></i> Ответ администратора (${t.repliedBy}):</strong>
-                                <p style="margin-top: 4px;">${t.reply}</p>
-                            </div>
-                        ` : `<p style="margin-top: 8px; font-size: 0.78rem; color: var(--accent);"><i class="fa-regular fa-clock"></i> Ожидает ответа техподдержки</p>`}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // --- АДМИН-ПАНЕЛЬ ---
-        async function openAdminModal() {
-            const currentNick = getCurrentUser();
-            if (!isAdminNick(currentNick)) {
-                showToast("Доступ только для администрации!", true);
-                return;
-            }
-
-            document.getElementById('adminModal').classList.add('active');
-            await syncAllFromFirebase(false);
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.remove('active');
-        }
-
-        function closeAdminOnOutside(e) {
-            if (e.target.id === 'adminModal') closeAdminModal();
-        }
-
-        function switchAdminView(tab) {
-            const isUsers = tab === 'users';
-            document.getElementById('adminTabUsersBtn').classList.toggle('active', isUsers);
-            document.getElementById('adminTabTicketsBtn').classList.toggle('active', !isUsers);
-            document.getElementById('adminUsersSection').style.display = isUsers ? 'block' : 'none';
-            document.getElementById('adminTicketsSection').style.display = isUsers ? 'none' : 'block';
-        }
-
-        function renderAdminUsersList() {
-            const container = document.getElementById('adminUsersContainer');
-            if (!container) return;
-
-            const search = (document.getElementById('adminSearchInput')?.value || "").toLowerCase().trim();
-            const userKeys = Object.keys(cachedUsers);
-            let totalCount = userKeys.length;
-            let bannedCount = 0;
-
-            userKeys.forEach(k => {
-                if (cachedUsers[k] && cachedUsers[k].banned) bannedCount++;
-            });
-
-            document.getElementById('statTotalUsers').textContent = totalCount;
-            document.getElementById('statActiveUsers').textContent = totalCount - bannedCount;
+            document.getElementById('statTotalUsers').textContent = usersArr.length;
+            document.getElementById('statActiveUsers').textContent = activeCount;
             document.getElementById('statBannedUsers').textContent = bannedCount;
-            document.getElementById('statTotalTickets').textContent = Object.keys(cachedTickets).length;
+            document.getElementById('statTotalTickets').textContent = ticketsArr.length;
 
-            const filteredKeys = userKeys.filter(k => {
-                const u = cachedUsers[k];
-                if (!u || !u.displayNick) return false;
-                return u.displayNick.toLowerCase().includes(search) || (u.town && u.town.toLowerCase().includes(search));
+            renderAdminPlayers();
+            renderAdminTickets();
+        }
+
+        function renderAdminPlayers() {
+            const listEl = document.getElementById('adminPlayersList');
+            const searchInput = document.getElementById('adminPlayerSearch');
+            if (!listEl) return;
+
+            const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+            const entries = Object.entries(dbState.users || {});
+
+            const filtered = entries.filter(([key, u]) => {
+                if (!u || !u.nick) return false;
+                const matchNick = u.nick.toLowerCase().includes(query);
+                const matchCity = String(u.city || '').toLowerCase().includes(query);
+                return matchNick || matchCity;
             });
 
-            if (filteredKeys.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 24px;">Аккаунты не найдены</p>`;
+            if (filtered.length === 0) {
+                listEl.innerHTML = `
+                    <div style="text-align: center; padding: 28px; color: var(--text-muted);">
+                        Игроки по вашему запросу не найдены.
+                    </div>
+                `;
                 return;
             }
 
-            container.innerHTML = filteredKeys.map(key => {
-                const u = cachedUsers[key];
-                const isTargetAdmin = isAdminNick(u.displayNick);
+            listEl.innerHTML = filtered.map(([lowerKey, u]) => {
+                const role = getRoleInfo(u.nick);
+                const targetIsAdmin = isAdmin(u.nick);
 
-                let statusBadge = u.banned
-                    ? `<span style="background:rgba(239,68,68,0.2); color:#f87171; padding:2px 8px; border-radius:6px; font-size:0.72rem;">ЗАБАНЕН</span>`
-                    : `<span style="background:rgba(16,185,129,0.18); color:#34d399; padding:2px 8px; border-radius:6px; font-size:0.72rem;">АКТИВЕН</span>`;
+                let actionsHTML = '';
+                if (targetIsAdmin) {
+                    actionsHTML = `
+                        <span class="role-badge role-creator" style="margin: 0;">
+                            <i class="fa-solid fa-lock"></i> Руководство (защищён)
+                        </span>
+                    `;
+                } else {
+                    const banOrUnbanBtn = u.banned
+                        ? `<button class="btn btn-sm btn-green" onclick="adminUnbanPlayer('${escapeHTML(lowerKey)}')"><i class="fa-solid fa-unlock"></i> Разбанить</button>`
+                        : `<button class="btn btn-sm btn-red" onclick="adminBanPlayer('${escapeHTML(lowerKey)}')"><i class="fa-solid fa-ban"></i> Забанить</button>`;
 
-                if (isTargetAdmin) {
-                    statusBadge = `<span style="background:rgba(245,158,11,0.2); color:#f59e0b; padding:2px 8px; border-radius:6px; font-size:0.72rem;"><i class="fa-solid fa-crown"></i> АДМИН</span>`;
-                }
-
-                let actionButtons = '';
-                if (!isTargetAdmin) {
-                    if (u.banned) {
-                        actionButtons += `<button class="btn-unban" onclick="adminToggleBan('${key}', false)"><i class="fa-solid fa-unlock"></i> Разбанить</button>`;
-                    } else {
-                        actionButtons += `<button class="btn-ban" onclick="adminToggleBan('${key}', true)"><i class="fa-solid fa-gavel"></i> Забанить</button>`;
-                    }
-                    actionButtons += `<button class="btn-del-acc" title="Удалить аккаунт" onclick="adminDeleteAccount('${key}')"><i class="fa-solid fa-trash"></i></button>`;
+                    actionsHTML = `
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            ${banOrUnbanBtn}
+                            <button class="btn btn-sm btn-dark" onclick="adminDeletePlayer('${escapeHTML(lowerKey)}')">
+                                <i class="fa-solid fa-trash"></i> Удалить аккаунт
+                            </button>
+                        </div>
+                    `;
                 }
 
                 return `
-                    <div class="admin-user-row ${u.banned ? 'is-banned' : ''}">
-                        <div class="admin-user-info">
-                            <img src="https://minotar.net/helm/${u.displayNick}/48.png" alt="${u.displayNick}">
-                            <div class="admin-user-meta">
-                                <h4>${u.displayNick} ${statusBadge}</h4>
-                                <p>
-                                    Город: <strong>${u.town || "Не указан"}</strong> • Рег: ${u.regDate || "-"}
-                                    ${u.banned ? `<br><span style="color:#f87171;">Причина бана: ${u.banReason}</span>` : ''}
-                                </p>
+                    <div class="player-item">
+                        <div class="player-top" style="margin-bottom: 0;">
+                            <div class="user-mini">
+                                <img src="https://minotar.net/helm/${encodeURIComponent(u.nick)}/150.png" alt="${escapeHTML(u.nick)}" onerror="this.src='https://minotar.net/helm/MHF_Steve/150.png'">
+                                <div>
+                                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                        <span style="font-weight: 800; font-size: 1rem;">${escapeHTML(u.nick)}</span>
+                                        <span class="role-badge ${role.roleClass}" style="margin: 0; font-size: 0.7rem; padding: 3px 9px;">
+                                            <i class="fa-solid ${role.icon}"></i> ${escapeHTML(role.roleName)}
+                                        </span>
+                                        ${u.banned ? `<span class="role-badge" style="margin:0; background: rgba(239,68,68,0.18); color:#f87171; border:1px solid rgba(239,68,68,0.4);">ЗАБАНЕН: ${escapeHTML(u.banReason || 'Нарушение правил')}</span>` : ''}
+                                    </div>
+                                    <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
+                                        <i class="fa-solid fa-city" style="color: var(--accent-amber);"></i> Город / Империя: <strong>${escapeHTML(u.city || 'Не указан')}</strong>
+                                        &nbsp;•&nbsp; Рег: ${escapeHTML(u.createdAt || '—')}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="admin-actions-group">
-                            ${actionButtons}
+                            ${actionsHTML}
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function renderAdminTicketsList() {
-            const container = document.getElementById('adminTicketsContainer');
-            if (!container) return;
+        function renderAdminTickets() {
+            const listEl = document.getElementById('adminTicketsList');
+            if (!listEl) return;
 
-            const keys = Object.keys(cachedTickets).sort().reverse();
-            if (keys.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 24px;">Обращений в техподдержку пока нет</p>`;
+            const ticketsArr = Object.values(dbState.tickets || {}).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+            if (ticketsArr.length === 0) {
+                listEl.innerHTML = `
+                    <div style="text-align: center; padding: 28px; color: var(--text-muted);">
+                        Тикетов в техподдержке пока нет.
+                    </div>
+                `;
                 return;
             }
 
-            container.innerHTML = keys.map(id => {
-                const t = cachedTickets[id];
-                if (!t) return '';
+            listEl.innerHTML = ticketsArr.map(t => {
+                const hasReply = Boolean(t.reply && String(t.reply).trim());
                 return `
-                    <div class="ticket-card">
-                        <div class="ticket-header">
-                            <strong><i class="fa-solid fa-user"></i> ${t.nick}</strong>
-                            <span style="color: var(--text-muted);">${t.date}</span>
+                    <div class="ticket-item">
+                        <div class="ticket-top">
+                            <div class="user-mini">
+                                <img src="https://minotar.net/helm/${encodeURIComponent(t.nick || 'Steve')}/150.png" alt="Avatar" onerror="this.src='https://minotar.net/helm/MHF_Steve/150.png'">
+                                <div>
+                                    <div style="font-weight: 800;">${escapeHTML(t.nick)}</div>
+                                    <div style="font-size: 0.76rem; color: var(--text-muted);">${escapeHTML(t.createdAt || '')}</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button class="btn btn-sm btn-blue" onclick="adminReplyTicket('${escapeHTML(t.id)}')">
+                                    <i class="fa-solid fa-reply"></i> Ответить / Изменить ответ
+                                </button>
+                                <button class="btn btn-sm btn-red" onclick="adminDeleteTicket('${escapeHTML(t.id)}')">
+                                    <i class="fa-solid fa-trash"></i> Удалить тикет
+                                </button>
+                            </div>
                         </div>
-                        <p style="margin-bottom: 10px;">${t.message}</p>
-                        ${t.reply ? `
-                            <div class="ticket-reply-box" style="margin-bottom: 10px;">
-                                <strong style="color: var(--support-color);">Ответ (${t.repliedBy}):</strong> ${t.reply}
+                        <div class="ticket-text">${escapeHTML(t.text)}</div>
+                        ${hasReply ? `
+                            <div class="ticket-reply">
+                                <div class="ticket-reply-head">
+                                    <i class="fa-solid fa-check-double"></i>
+                                    <span>Ответ от ${escapeHTML(t.repliedBy || 'Администратора')}:</span>
+                                </div>
+                                <div style="font-size: 0.9rem; white-space: pre-wrap;">${escapeHTML(t.reply)}</div>
                             </div>
                         ` : ''}
-                        <div class="admin-actions-group">
-                            <button class="btn-unban" onclick="adminReplyTicket('${id}')">
-                                <i class="fa-solid fa-reply"></i> ${t.reply ? 'Изменить ответ' : 'Ответить'}
-                            </button>
-                            <button class="btn-del-acc" onclick="adminDeleteTicket('${id}')">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
                     </div>
                 `;
             }).join('');
+        }
+
+        async function setServerStatus(newStatus) {
+            if (!currentUserNickLower || !isAdmin(currentUserNickLower)) return;
+
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/settings/serverStatus.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newStatus)
+                });
+                if (!res.ok) throw new Error('Status update failed');
+
+                dbState.serverStatus = newStatus;
+                updateAllUI();
+                showToast('Статус сервера обновлён!', 'success');
+            } catch (err) {
+                showToast('Ошибка при смене статуса сервера', 'error');
+            }
+        }
+
+        async function adminBanPlayer(lowerKey) {
+            if (!currentUserNickLower || !isAdmin(currentUserNickLower)) return;
+            const target = dbState.users[lowerKey];
+            if (!target || isAdmin(target.nick)) {
+                showToast('Администратора нельзя заблокировать!', 'error');
+                return;
+            }
+
+            const reason = prompt(`Укажите причину бана для игрока ${target.nick}:`, 'Нарушение правил сервера');
+            if (reason === null) return;
+
+            const updated = {
+                ...target,
+                banned: true,
+                banReason: reason.trim() || 'Нарушение правил сервера'
+            };
+
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/users/${lowerKey}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updated)
+                });
+                if (!res.ok) throw new Error('Ban error');
+
+                dbState.users[lowerKey] = updated;
+                updateAllUI();
+                showToast(`Игрок ${target.nick} заблокирован`, 'success');
+            } catch (err) {
+                showToast('Ошибка при блокировке игрока', 'error');
+            }
+        }
+
+        async function adminUnbanPlayer(lowerKey) {
+            if (!currentUserNickLower || !isAdmin(currentUserNickLower)) return;
+            const target = dbState.users[lowerKey];
+            if (!target) return;
+
+            const updated = {
+                ...target,
+                banned: false,
+                banReason: ''
+            };
+
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/users/${lowerKey}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updated)
+                });
+                if (!res.ok) throw new Error('Unban error');
+
+                dbState.users[lowerKey] = updated;
+                updateAllUI();
+                showToast(`Игрок ${target.nick} разблокирован`, 'success');
+            } catch (err) {
+                showToast('Ошибка при разблокировке игрока', 'error');
+            }
+        }
+
+        async function adminDeletePlayer(lowerKey) {
+            if (!currentUserNickLower || !isAdmin(currentUserNickLower)) return;
+            const target = dbState.users[lowerKey];
+            if (!target || isAdmin(target.nick)) {
+                showToast('Администратора нельзя удалить!', 'error');
+                return;
+            }
+
+            if (!confirm(`Вы действительно хотите безвозвратно удалить аккаунт игрока ${target.nick}?`)) return;
+
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/users/${lowerKey}.json`, {
+                    method: 'DELETE'
+                });
+                if (!res.ok) throw new Error('Delete player error');
+
+                delete dbState.users[lowerKey];
+                updateAllUI();
+                showToast(`Аккаунт ${target.nick} удалён`, 'info');
+            } catch (err) {
+                showToast('Ошибка при удалении аккаунта', 'error');
+            }
         }
 
         async function adminReplyTicket(ticketId) {
-            const currentNick = getCurrentUser();
-            if (!isAdminNick(currentNick)) return;
-
-            const ticket = cachedTickets[ticketId];
+            if (!currentUserNickLower || !isAdmin(currentUserNickLower)) return;
+            const ticket = dbState.tickets[ticketId];
             if (!ticket) return;
 
-            const adminDisplay = cachedUsers[currentNick]?.displayNick || currentNick;
-            const replyText = prompt(`Ответ игроку ${ticket.nick}:`, ticket.reply || "");
+            const adminUser = dbState.users[currentUserNickLower];
+            const adminDisplayNick = adminUser ? adminUser.nick : getRoleInfo(currentUserNickLower).displayNick;
+
+            const replyText = prompt(`Введите ответ на обращение игрока ${ticket.nick}:`, ticket.reply || '');
             if (replyText === null) return;
 
-            ticket.reply = replyText.trim();
-            ticket.repliedBy = adminDisplay;
+            const updatedTicket = {
+                ...ticket,
+                reply: replyText.trim(),
+                repliedBy: adminDisplayNick
+            };
 
-            await dbRequest(`tickets/${ticketId}`, "PUT", ticket);
-            cachedTickets[ticketId] = ticket;
-            renderAdminTicketsList();
-            renderMyTickets();
-            showToast("Ответ сохранён в БД!");
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/tickets/${ticketId}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedTicket)
+                });
+                if (!res.ok) throw new Error('Reply error');
+
+                dbState.tickets[ticketId] = updatedTicket;
+                updateAllUI();
+                showToast('Ответ на тикет сохранён!', 'success');
+            } catch (err) {
+                showToast('Ошибка при сохранении ответа', 'error');
+            }
         }
 
         async function adminDeleteTicket(ticketId) {
-            const currentNick = getCurrentUser();
-            if (!isAdminNick(currentNick)) return;
+            if (!currentUserNickLower || !isAdmin(currentUserNickLower)) return;
+            if (!confirm('Удалить этот тикет из базы данных?')) return;
 
-            await dbRequest(`tickets/${ticketId}`, "DELETE");
-            delete cachedTickets[ticketId];
-            renderAdminTicketsList();
-            renderAdminUsersList();
-            renderMyTickets();
-            showToast("Тикет удалён");
-        }
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/tickets/${ticketId}.json`, {
+                    method: 'DELETE'
+                });
+                if (!res.ok) throw new Error('Delete ticket error');
 
-        async function adminToggleBan(targetKey, shouldBan) {
-            const currentNick = getCurrentUser();
-            if (!isAdminNick(currentNick)) return;
-
-            const targetUser = cachedUsers[targetKey];
-            if (!targetUser || isAdminNick(targetUser.displayNick)) return;
-
-            if (shouldBan) {
-                const reason = prompt(`Укажи причину блокировки игрока ${targetUser.displayNick}:`, "Нарушение правил сервера");
-                if (reason === null) return;
-                targetUser.banned = true;
-                targetUser.banReason = reason.trim() || "Нарушение правил сервера";
-                targetUser.bannedBy = currentNick;
-                showToast(`Игрок ${targetUser.displayNick} заблокирован!`, true);
-            } else {
-                targetUser.banned = false;
-                targetUser.banReason = "";
-                showToast(`Игрок ${targetUser.displayNick} разблокирован!`);
+                delete dbState.tickets[ticketId];
+                updateAllUI();
+                showToast('Тикет удалён', 'info');
+            } catch (err) {
+                showToast('Ошибка при удалении тикета', 'error');
             }
-
-            await dbRequest(`users/${targetKey}`, "PUT", targetUser);
-            cachedUsers[targetKey] = targetUser;
-            renderAdminUsersList();
         }
 
-        async function adminDeleteAccount(targetKey) {
-            const currentNick = getCurrentUser();
-            if (!isAdminNick(currentNick)) return;
-
-            const targetUser = cachedUsers[targetKey];
-            if (!targetUser || isAdminNick(targetUser.displayNick)) return;
-
-            if (!confirm(`Удалить аккаунт игрока ${targetUser.displayNick} навсегда?`)) return;
-
-            await dbRequest(`users/${targetKey}`, "DELETE");
-            delete cachedUsers[targetKey];
-            renderAdminUsersList();
-            showToast(`Аккаунт ${targetUser.displayNick} удалён`);
-        }
-
-        // Старт и автосинхронизация каждые 4 секунды
-        updateNavButton();
-        syncAllFromFirebase(false);
-        setInterval(() => syncAllFromFirebase(false), 4000);
+        /* =========================================================
+           9. INITIALIZATION & BACKGROUND SYNC
+        ========================================================= */
+        window.addEventListener('DOMContentLoaded', () => {
+            syncAllFromFirebase(true);
+            setInterval(() => {
+                syncAllFromFirebase(false);
+            }, 4000);
+        });
     </script>
- </body>
+</body>
 </html>
-...
+```

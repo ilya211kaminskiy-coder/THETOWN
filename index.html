@@ -1,3 +1,4 @@
+
 ```html
 <!DOCTYPE html>
 <html lang="ru">
@@ -18,9 +19,10 @@
             --bg-card: rgba(20, 25, 35, 0.75);
             --primary: #10b981; /* Изумрудный */
             --primary-glow: rgba(16, 185, 129, 0.4);
-            --accent: #f59e0b; /* Золотой */
-            --creator: #ef4444; /* Красный для Создателя и Банов */
+            --accent: #f59e0b; /* Золотой / Тех.работы */
+            --creator: #ef4444; /* Красный для Создателя и Выкл */
             --cofounder: #8b5cf6; /* Фиолетовый для Сооснователя */
+            --tech: #06b6d4; /* Голубой для Тех.Админа Sanraizzz */
             --yt-red: #ff0033;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
@@ -71,7 +73,7 @@
 
         .nav-links {
             display: flex;
-            gap: 25px;
+            gap: 22px;
         }
 
         .nav-links a {
@@ -88,7 +90,7 @@
         .nav-buttons {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .btn-discord {
@@ -99,7 +101,7 @@
             border-radius: 8px;
             text-decoration: none;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -111,6 +113,28 @@
             box-shadow: 0 0 15px rgba(88, 101, 242, 0.5);
         }
 
+        .btn-support-nav {
+            background: rgba(6, 182, 212, 0.15);
+            border: 1px solid var(--tech);
+            color: #22d3ee;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-support-nav:hover {
+            background: var(--tech);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+        }
+
         .btn-account {
             background: var(--primary);
             color: var(--bg-dark);
@@ -119,7 +143,7 @@
             border: none;
             font-family: 'Montserrat', sans-serif;
             font-weight: 800;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -133,8 +157,8 @@
         }
 
         .btn-account img {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             border-radius: 4px;
         }
 
@@ -175,12 +199,10 @@
             background-blend-mode: overlay;
         }
 
+        /* ИНДИКАТОР СОСТОЯНИЯ СЕРВЕРА */
         .status-badge {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 6px 18px;
-            border-radius: 20px;
+            padding: 8px 20px;
+            border-radius: 25px;
             font-size: 12px;
             font-weight: 800;
             letter-spacing: 1px;
@@ -188,14 +210,29 @@
             margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            animation: pulseGreen 2s infinite;
+            gap: 10px;
+            transition: all 0.3s;
         }
 
-        @keyframes pulseGreen {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-            70% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        .status-online {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .status-maintenance {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+        }
+
+        .status-offline {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid var(--creator);
+            color: #f87171;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.25);
         }
 
         .main-logo {
@@ -340,19 +377,19 @@
         .voice-content h3 { font-size: 32px; font-weight: 900; margin-bottom: 15px; }
         .voice-content p { color: var(--text-muted); font-size: 16px; margin-bottom: 25px; }
 
-        /* АДМИНИСТРАЦИЯ */
+        /* АДМИНИСТРАЦИЯ (3 КАРТОЧКИ) */
         .team-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 40px;
-            max-width: 850px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
         .admin-card {
             background: var(--bg-card);
             border-radius: 24px;
-            padding: 40px 30px;
+            padding: 40px 25px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -372,6 +409,12 @@
             box-shadow: 0 15px 40px rgba(139, 92, 246, 0.25);
         }
 
+        .admin-card.tech:hover {
+            transform: translateY(-10px);
+            border-color: var(--tech);
+            box-shadow: 0 15px 40px rgba(6, 182, 212, 0.25);
+        }
+
         .admin-glow {
             position: absolute;
             top: -50px;
@@ -387,6 +430,7 @@
 
         .creator .admin-glow { background: var(--creator); }
         .cofounder .admin-glow { background: var(--cofounder); }
+        .tech .admin-glow { background: var(--tech); }
 
         .admin-skin {
             position: relative;
@@ -403,7 +447,7 @@
         .admin-name {
             position: relative;
             z-index: 1;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 900;
             margin-bottom: 10px;
             display: flex;
@@ -418,7 +462,7 @@
             display: inline-block;
             padding: 6px 16px;
             border-radius: 30px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -435,6 +479,12 @@
             background: rgba(139, 92, 246, 0.15);
             color: #c084fc;
             border: 1px solid var(--cofounder);
+        }
+
+        .role-tech {
+            background: rgba(6, 182, 212, 0.15);
+            color: #22d3ee;
+            border: 1px solid var(--tech);
         }
 
         .role-player {
@@ -564,7 +614,20 @@
         }
         .btn-partner:hover { background: var(--accent); color: var(--bg-dark); }
 
-        /* МОДАЛЬНЫЕ ОКНА (АККАУНТ И АДМИН-ПАНЕЛЬ) */
+        /* БЛОК ТЕХПОДДЕРЖКИ НА СТРАНИЦЕ */
+        .support-banner {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(20, 25, 35, 0.9) 100%);
+            border: 1px solid var(--tech);
+            border-radius: 24px;
+            padding: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            box-shadow: 0 0 35px rgba(6, 182, 212, 0.12);
+        }
+
+        /* МОДАЛЬНЫЕ ОКНА */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -584,7 +647,7 @@
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 24px;
             width: 100%;
-            max-width: 460px;
+            max-width: 480px;
             padding: 35px;
             position: relative;
             box-shadow: 0 25px 60px rgba(0,0,0,0.9);
@@ -595,7 +658,7 @@
         }
 
         .modal-box.admin-modal-box {
-            max-width: 850px;
+            max-width: 900px;
             text-align: left;
         }
 
@@ -616,7 +679,6 @@
 
         .close-modal:hover { color: white; }
 
-        /* Вкладки Вход / Регистрация */
         .auth-tabs {
             display: flex;
             background: rgba(255,255,255,0.04);
@@ -633,7 +695,7 @@
             color: var(--text-muted);
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
@@ -666,7 +728,7 @@
             border-radius: 10px;
             color: white;
             font-family: 'Montserrat', sans-serif;
-            font-size: 15px;
+            font-size: 14px;
             outline: none;
             transition: border-color 0.3s;
         }
@@ -752,6 +814,7 @@
             font-size: 12px;
             cursor: pointer;
             transition: 0.3s;
+            font-family: 'Montserrat', sans-serif;
         }
         .btn-save-town:hover { opacity: 0.9; }
 
@@ -771,7 +834,57 @@
             margin-bottom: 15px;
         }
 
-        /* СТИЛИ АДМИН-ПАНЕЛИ */
+        /* СТИЛИ АДМИН-ПАНЕЛИ И УПРАВЛЕНИЯ СТАТУСОМ */
+        .server-control-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .status-btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-status-set {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 12px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+            transition: 0.2s;
+        }
+
+        .btn-status-set.online:hover, .btn-status-set.online.active {
+            background: var(--primary);
+            color: var(--bg-dark);
+            border-color: var(--primary);
+        }
+
+        .btn-status-set.maintenance:hover, .btn-status-set.maintenance.active {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border-color: var(--accent);
+        }
+
+        .btn-status-set.offline:hover, .btn-status-set.offline.active {
+            background: var(--creator);
+            color: white;
+            border-color: var(--creator);
+        }
+
         .admin-stats-bar {
             display: flex;
             gap: 15px;
@@ -790,7 +903,7 @@
 
         .admin-stat-card span {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
             font-weight: 700;
@@ -806,7 +919,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-height: 400px;
+            max-height: 360px;
             overflow-y: auto;
             padding-right: 5px;
         }
@@ -910,6 +1023,24 @@
             color: white;
         }
 
+        /* Карточка тикета техподдержки */
+        .ticket-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .ticket-reply-box {
+            background: rgba(6, 182, 212, 0.1);
+            border-left: 3px solid var(--tech);
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
         /* Уведомление */
         #toast {
             visibility: hidden;
@@ -943,10 +1074,10 @@
         .social-links a { color: var(--text-main); font-size: 24px; transition: 0.3s; }
         .social-links a:hover { color: var(--primary); transform: scale(1.2); }
 
-        @media (max-width: 900px) {
+        @media (max-width: 950px) {
             nav { padding: 15px 20px; }
             .nav-links { display: none; }
-            .step-item, .voice-banner { flex-direction: column; text-align: center; }
+            .step-item, .voice-banner, .support-banner { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -957,14 +1088,17 @@
         <a href="#" class="nav-logo">THETOWN</a>
         <div class="nav-links">
             <a href="#about">О сервере</a>
-            <a href="#voice">Голосовой чат</a>
+            <a href="#voice">Мод</a>
             <a href="#team">Руководство</a>
-            <a href="#progression">Развитие</a>
             <a href="#youtubers">Медиа</a>
+            <a href="#support">Техподдержка</a>
         </div>
         <div class="nav-buttons">
             <button class="btn-admin-nav" id="navAdminBtn" onclick="openAdminModal()">
                 <i class="fa-solid fa-gavel"></i> Админ-панель
+            </button>
+            <button class="btn-support-nav" onclick="openSupportModal()">
+                <i class="fa-solid fa-headset"></i> Поддержка
             </button>
             <a href="https://discord.gg/VBt99RQRN" target="_blank" class="btn-discord">
                 <i class="fa-brands fa-discord"></i> Discord
@@ -977,9 +1111,12 @@
 
     <!-- Главный экран -->
     <section class="hero">
-        <div class="status-badge">
-            <i class="fa-solid fa-circle" style="font-size: 8px;"></i> Сервер запущен • Заходи играть
+        <!-- Динамический индикатор состояния сервера -->
+        <div id="heroServerStatus" class="status-badge status-online">
+            <i class="fa-solid fa-circle" style="font-size: 9px;"></i>
+            <span id="heroServerStatusText">Сервер включен • Заходи играть</span>
         </div>
+
         <h1 class="main-logo">THETOWN</h1>
         <p class="hero-subtitle">
             Глобальный геополитический сервер. Начни развитие <span>с полного нуля</span> на реальной карте Земли, построй свой город и создай <span>Великую Империю</span>!
@@ -1026,7 +1163,7 @@
         </div>
     </section>
 
-    <!-- Руководство сервера (Админы) -->
+    <!-- Руководство сервера (Админы: MrLov3n4ik, Vunpos, Sanraizzz) -->
     <section id="team" class="section">
         <h2 class="section-title">Руководство Проекта</h2>
         <div class="team-grid">
@@ -1051,6 +1188,17 @@
                 </div>
                 <div class="role-badge role-cofounder">Сооснователь • Контент-креатор</div>
                 <p class="admin-desc">Сооснователь проекта и главное медиа-лицо сервера. Отвечает за развитие комьюнити, ивенты и создание эпичного контента.</p>
+            </div>
+
+            <!-- Карточка Sanraizzz -->
+            <div class="admin-card tech">
+                <div class="admin-glow"></div>
+                <img src="https://minotar.net/helm/Sanraizzz/150.png" alt="Sanraizzz" class="admin-skin">
+                <div class="admin-name">
+                    <i class="fa-solid fa-headset" style="color: var(--tech); font-size: 22px;"></i> Sanraizzz
+                </div>
+                <div class="role-badge role-tech">Администратор • Техподдержка</div>
+                <p class="admin-desc">Глава технической поддержки и администратор сервера. Помогает игрокам с решением любых проблем, следит за порядком и стабильностью.</p>
             </div>
 
         </div>
@@ -1112,13 +1260,35 @@
         </div>
     </section>
 
+    <!-- Блок Техподдержки -->
+    <section id="support" class="section" style="padding-top: 10px;">
+        <div class="support-banner">
+            <i class="fa-solid fa-headset" style="font-size: 90px; color: var(--tech); text-shadow: 0 0 30px rgba(6, 182, 212, 0.4);"></i>
+            <div style="flex: 1;">
+                <span class="voice-tag" style="background: var(--tech); color: var(--bg-dark);"><i class="fa-solid fa-bolt"></i> Быстрая помощь 24/7</span>
+                <h3 style="font-size: 30px; font-weight: 900; margin-bottom: 12px;">Возникли проблемы или вопросы?</h3>
+                <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 22px;">
+                    Техническая поддержка во главе с <b>Sanraizzz</b> всегда готова помочь! Вы можете создать обращение прямо на сайте или написать нам в Discord.
+                </p>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <button class="btn-primary" onclick="openSupportModal()" style="background: var(--tech); padding: 12px 26px; font-size: 14px; box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);">
+                        <i class="fa-solid fa-envelope-open-text"></i> Написать в Техподдержку
+                    </button>
+                    <a href="https://discord.gg/VBt99RQRN" target="_blank" class="btn-discord" style="padding: 12px 24px;">
+                        <i class="fa-brands fa-discord"></i> Помощь в Discord
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Подвал сайта -->
     <footer>
         <div class="social-links">
             <a href="https://discord.gg/VBt99RQRN" target="_blank" title="Discord"><i class="fa-brands fa-discord"></i></a>
             <a href="https://www.youtube.com/@Vunpos" target="_blank" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
         </div>
-        <p>&copy; 2024 THETOWN Minecraft Server. Создано MrLov3n4ik & Vunpos.</p>
+        <p>&copy; 2024 THETOWN Minecraft Server. Руководство: MrLov3n4ik, Vunpos & Sanraizzz.</p>
         <p style="font-size: 12px; margin-top: 5px; opacity: 0.5;">IP: f1.rustix.me:35223</p>
     </footer>
 
@@ -1127,7 +1297,7 @@
         <div class="modal-box">
             <button class="close-modal" onclick="closeAccountModal()"><i class="fa-solid fa-xmark"></i></button>
             
-            <!-- БЛОК АВТОРИЗАЦИИ (Вход и Регистрация) -->
+            <!-- БЛОК АВТОРИЗАЦИИ -->
             <div id="authContainer">
                 <div class="auth-tabs">
                     <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Вход</button>
@@ -1171,7 +1341,7 @@
                 </div>
             </div>
 
-            <!-- БЛОК ЭКРАНА БАНА (Если игрок забанен админом) -->
+            <!-- БЛОК ЭКРАНА БАНА -->
             <div id="bannedContainer" style="display: none;">
                 <div class="banned-box">
                     <i class="fa-solid fa-ban"></i>
@@ -1184,15 +1354,15 @@
                         <div><b>Причина бана:</b> <span id="banReasonText" style="color: #f87171;">Нарушение правил</span></div>
                     </div>
                 </div>
-                <a href="https://discord.gg/VBt99RQRN" target="_blank" class="btn-discord" style="justify-content: center; margin-bottom: 12px; padding: 12px;">
-                    <i class="fa-brands fa-discord"></i> Подать апелляцию в Discord
-                </a>
+                <button class="btn-support-nav" onclick="closeAccountModal(); openSupportModal();" style="width: 100%; justify-content: center; margin-bottom: 10px; padding: 12px;">
+                    <i class="fa-solid fa-headset"></i> Обжаловать в Техподдержке
+                </button>
                 <button class="btn-partner" onclick="logoutUser()" style="background: rgba(255,255,255,0.08); color: var(--text-muted);">
                     Выйти из аккаунта
                 </button>
             </div>
 
-            <!-- БЛОК ЛИЧНОГО КАБИНЕТА (После входа) -->
+            <!-- БЛОК ЛИЧНОГО КАБИНЕТА -->
             <div id="profileContainer" style="display: none;">
                 <div class="profile-header">
                     <img id="profileSkin" src="" alt="Skin" class="profile-skin-body">
@@ -1222,9 +1392,8 @@
                     </div>
                 </div>
 
-                <!-- Кнопка открытия Админ-панели внутри профиля (только для админов) -->
                 <button id="profileAdminBtn" class="btn-partner" onclick="closeAccountModal(); openAdminModal();" style="display: none; background: rgba(239, 68, 68, 0.2); border: 1px solid var(--creator); color: #f87171; margin-bottom: 10px;">
-                    <i class="fa-solid fa-gavel"></i> Управление игроками (Админ-панель)
+                    <i class="fa-solid fa-gavel"></i> Открыть Админ-панель
                 </button>
 
                 <button class="btn-partner" onclick="logoutUser()" style="background: rgba(255, 255, 255, 0.06); color: var(--text-muted);">
@@ -1235,7 +1404,37 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО 2: АДМИН-ПАНЕЛЬ (ДЛЯ MrLov3n4ik и Vunpos) -->
+    <!-- МОДАЛЬНОЕ ОКНО 2: ТЕХПОДДЕРЖКА (ДЛЯ ИГРОКОВ) -->
+    <div class="modal-overlay" id="supportModal">
+        <div class="modal-box">
+            <button class="close-modal" onclick="closeSupportModal()"><i class="fa-solid fa-xmark"></i></button>
+            
+            <i class="fa-solid fa-headset" style="font-size: 42px; color: var(--tech); margin-bottom: 10px;"></i>
+            <h3 style="font-size: 22px; font-weight: 900; margin-bottom: 5px;">Техническая Поддержка</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Опишите вашу проблему, и администратор <b>Sanraizzz</b> ответит вам прямо здесь!</p>
+
+            <div class="form-group">
+                <label>Ваш игровой никнейм</label>
+                <input type="text" id="ticketNick" class="form-input" placeholder="Например: Steve">
+            </div>
+            <div class="form-group">
+                <label>Суть обращения / Вопрос</label>
+                <textarea id="ticketMessage" class="form-input" rows="3" placeholder="Опишите проблему подробно..."></textarea>
+            </div>
+            <button class="btn-primary" id="btnSendTicket" onclick="sendSupportTicket()" style="width: 100%; justify-content: center; background: var(--tech); margin-bottom: 20px;">
+                <i class="fa-solid fa-paper-plane"></i> Отправить обращение
+            </button>
+
+            <div style="text-align: left; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 15px;">
+                <h4 style="font-size: 13px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;">Ваши обращения и ответы:</h4>
+                <div id="userTicketsList" class="players-list" style="max-height: 200px;">
+                    <p style="font-size: 13px; color: var(--text-muted); text-align: center;">Нет активных обращений</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО 3: АДМИН-ПАНЕЛЬ (ДЛЯ MrLov3n4ik, Vunpos, Sanraizzz) -->
     <div class="modal-overlay" id="adminModal">
         <div class="modal-box admin-modal-box">
             <button class="close-modal" onclick="closeAdminModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -1244,35 +1443,79 @@
                 <i class="fa-solid fa-crown" style="font-size: 28px; color: var(--accent);"></i>
                 <div>
                     <h3 style="font-size: 22px; font-weight: 900;">Панель Управления THETOWN</h3>
-                    <p style="font-size: 12px; color: var(--text-muted);">Облачная база данных Google Firebase • Доступно только Основателям</p>
+                    <p style="font-size: 12px; color: var(--text-muted);">Доступно: MrLov3n4ik, Vunpos, Sanraizzz</p>
                 </div>
             </div>
 
-            <div class="admin-stats-bar">
-                <div class="admin-stat-card">
-                    <span>Всего аккаунтов</span>
-                    <strong id="statTotalPlayers">0</strong>
+            <!-- БЛОК ПЕРЕКЛЮЧЕНИЯ СОСТОЯНИЯ СЕРВЕРА -->
+            <div class="server-control-box">
+                <div>
+                    <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted);">Состояние сервера на сайте:</div>
+                    <div id="adminCurrentStatusLabel" style="font-size: 15px; font-weight: 800; color: var(--primary);">Включен</div>
                 </div>
-                <div class="admin-stat-card">
-                    <span>Забанено</span>
-                    <strong id="statBannedPlayers" style="color: var(--creator);">0</strong>
-                </div>
-                <div class="admin-stat-card">
-                    <span>Основано городов</span>
-                    <strong id="statTownsCount" style="color: var(--accent);">0</strong>
+                <div class="status-btn-group">
+                    <button class="btn-status-set online" id="btnSetOnline" onclick="changeServerStatus('online')">
+                        <i class="fa-solid fa-power-off"></i> Включен
+                    </button>
+                    <button class="btn-status-set maintenance" id="btnSetMaint" onclick="changeServerStatus('maintenance')">
+                        <i class="fa-solid fa-screwdriver-wrench"></i> На тех. работах
+                    </button>
+                    <button class="btn-status-set offline" id="btnSetOffline" onclick="changeServerStatus('offline')">
+                        <i class="fa-solid fa-ban"></i> Выключен
+                    </button>
                 </div>
             </div>
 
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <input type="text" id="adminSearchInput" class="form-input" placeholder="Поиск игрока по нику или названию города..." oninput="renderAdminPlayersList()" style="padding: 10px 14px; font-size: 14px;">
-                <button class="btn-save-town" onclick="loadAdminPlayers()" style="padding: 0 18px;">
-                    <i class="fa-solid fa-rotate"></i> Обновить
+            <!-- ВКЛАДКИ АДМИНКИ: ИГРОКИ ИЛИ ТЕХПОДДЕРЖКА -->
+            <div class="auth-tabs" style="margin-bottom: 20px;">
+                <button class="auth-tab active" id="adminTabPlayers" onclick="switchAdminTab('players')">
+                    <i class="fa-solid fa-users"></i> Игроки и Баны
+                </button>
+                <button class="auth-tab" id="adminTabTickets" onclick="switchAdminTab('tickets')">
+                    <i class="fa-solid fa-headset"></i> Тикеты Техподдержки
                 </button>
             </div>
 
-            <div id="adminPlayersList" class="players-list">
-                <p style="text-align: center; color: var(--text-muted); padding: 20px;">Загрузка базы данных...</p>
+            <!-- Вкладка 1: Игроки -->
+            <div id="adminPlayersSection">
+                <div class="admin-stats-bar">
+                    <div class="admin-stat-card">
+                        <span>Всего аккаунтов</span>
+                        <strong id="statTotalPlayers">0</strong>
+                    </div>
+                    <div class="admin-stat-card">
+                        <span>Забанено</span>
+                        <strong id="statBannedPlayers" style="color: var(--creator);">0</strong>
+                    </div>
+                    <div class="admin-stat-card">
+                        <span>Основано городов</span>
+                        <strong id="statTownsCount" style="color: var(--accent);">0</strong>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="text" id="adminSearchInput" class="form-input" placeholder="Поиск игрока по нику или городу..." oninput="renderAdminPlayersList()" style="padding: 10px 14px;">
+                    <button class="btn-save-town" onclick="loadAdminPlayers()" style="padding: 0 18px;">
+                        <i class="fa-solid fa-rotate"></i> Обновить
+                    </button>
+                </div>
+
+                <div id="adminPlayersList" class="players-list">
+                    <p style="text-align: center; color: var(--text-muted); padding: 20px;">Загрузка...</p>
+                </div>
             </div>
+
+            <!-- Вкладка 2: Тикеты Техподдержки -->
+            <div id="adminTicketsSection" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span style="font-size: 13px; color: var(--text-muted);">Обращения игроков с сайта:</span>
+                    <button class="btn-save-town" onclick="loadAdminTickets()"><i class="fa-solid fa-rotate"></i> Обновить тикеты</button>
+                </div>
+                <div id="adminTicketsList" class="players-list">
+                    <p style="text-align: center; color: var(--text-muted); padding: 20px;">Загрузка обращений...</p>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -1281,17 +1524,13 @@
 
     <script>
         const SERVER_IP = "f1.rustix.me:35223";
-        const ADMINS = ["mrlov3n4ik", "vunpos"];
+        const ADMINS = ["mrlov3n4ik", "vunpos", "sanraizzz"];
+        const BASE_FIREBASE = "https://thetown-6fbfa-default-rtdb.firebaseio.com";
 
-        // Возможные адреса твоей базы данных Google Firebase (автоопределение региона)
-        const DB_URLS = [
-            "https://thetown-6fbfa-default-rtdb.firebaseio.com",
-            "https://thetown-6fbfa-default-rtdb.europe-west1.firebasedatabase.app"
-        ];
-        let activeDbUrl = localStorage.getItem("thetown_db_url") || DB_URLS[0];
         let cachedUsersDB = {};
+        let cachedTicketsDB = {};
 
-        // Функция обращения к Google Firebase
+        // Прямой запрос к базе данных Google Firebase (без прокси)
         async function firebaseRequest(path, method = "GET", body = null) {
             const options = {
                 method: method,
@@ -1299,24 +1538,22 @@
             };
             if (body !== null) options.body = JSON.stringify(body);
 
-            for (let url of [activeDbUrl, ...DB_URLS]) {
-                try {
-                    const res = await fetch(`${url}/${path}.json`, options);
-                    if (res.ok) {
-                        activeDbUrl = url;
-                        localStorage.setItem("thetown_db_url", url);
-                        return await res.json();
-                    }
-                } catch (e) {
-                    // Пробуем следующий региональный URL
-                }
-            }
-            throw new Error("Не удалось подключиться к базе Firebase");
+            const res = await fetch(`${BASE_FIREBASE}/${path}.json`, options);
+            if (!res.ok) throw new Error("Firebase error: " + res.status);
+            return await res.json();
         }
 
-        // Проверка, является ли пользователь админом
+        // Проверка на админа
         function isAdmin(nickKey) {
             return ADMINS.includes((nickKey || "").toLowerCase());
+        }
+
+        function getAdminDisplayName(key) {
+            const k = (key || "").toLowerCase();
+            if (k === "mrlov3n4ik") return "MrLov3n4ik";
+            if (k === "vunpos") return "Vunpos";
+            if (k === "sanraizzz") return "Sanraizzz";
+            return key;
         }
 
         // Уведомление снизу
@@ -1333,7 +1570,57 @@
             showToast("IP скопирован: " + SERVER_IP);
         }
 
-        // Управление модальными окнами
+        // ================= СТАТУС СЕРВЕРА (ВКЛ / ТЕХ.РАБОТЫ / ВЫКЛ) =================
+        async function loadServerStatus() {
+            try {
+                const status = await firebaseRequest("settings/serverStatus", "GET");
+                applyServerStatusUI(status || "online");
+            } catch (e) {
+                applyServerStatusUI("online");
+            }
+        }
+
+        function applyServerStatusUI(status) {
+            const badge = document.getElementById("heroServerStatus");
+            const text = document.getElementById("heroServerStatusText");
+            const adminLabel = document.getElementById("adminCurrentStatusLabel");
+
+            document.getElementById("btnSetOnline").classList.remove("active");
+            document.getElementById("btnSetMaint").classList.remove("active");
+            document.getElementById("btnSetOffline").classList.remove("active");
+
+            if (status === "maintenance") {
+                badge.className = "status-badge status-maintenance";
+                text.innerText = "Сервер на тех. работах • Обновление";
+                if (adminLabel) { adminLabel.innerText = "На тех. работах"; adminLabel.style.color = "var(--accent)"; }
+                document.getElementById("btnSetMaint").classList.add("active");
+            } else if (status === "offline") {
+                badge.className = "status-badge status-offline";
+                text.innerText = "Сервер временно выключен";
+                if (adminLabel) { adminLabel.innerText = "Выключен"; adminLabel.style.color = "#f87171"; }
+                document.getElementById("btnSetOffline").classList.add("active");
+            } else {
+                badge.className = "status-badge status-online";
+                text.innerText = "Сервер включен • Заходи играть";
+                if (adminLabel) { adminLabel.innerText = "Включен"; adminLabel.style.color = "var(--primary)"; }
+                document.getElementById("btnSetOnline").classList.add("active");
+            }
+        }
+
+        async function changeServerStatus(newStatus) {
+            const currentKey = localStorage.getItem("thetown_current_user");
+            if (!isAdmin(currentKey)) return;
+
+            try {
+                await firebaseRequest("settings/serverStatus", "PUT", newStatus);
+                applyServerStatusUI(newStatus);
+                showToast("Статус сервера обновлен для всех!");
+            } catch (e) {
+                showToast("Ошибка изменения статуса!");
+            }
+        }
+
+        // ================= АВТОРИЗАЦИЯ И ПРОФИЛЬ =================
         async function openAccountModal() {
             document.getElementById("accountModal").classList.add("active");
             hideError();
@@ -1346,22 +1633,10 @@
 
         function switchAuthTab(tab) {
             hideError();
-            const loginForm = document.getElementById("loginForm");
-            const regForm = document.getElementById("registerForm");
-            const tabLogin = document.getElementById("tabLogin");
-            const tabReg = document.getElementById("tabRegister");
-
-            if (tab === 'login') {
-                loginForm.style.display = "block";
-                regForm.style.display = "none";
-                tabLogin.classList.add("active");
-                tabReg.classList.remove("active");
-            } else {
-                loginForm.style.display = "none";
-                regForm.style.display = "block";
-                tabLogin.classList.remove("active");
-                tabReg.classList.add("active");
-            }
+            document.getElementById("loginForm").style.display = tab === 'login' ? "block" : "none";
+            document.getElementById("registerForm").style.display = tab === ' register' || tab === 'register' ? "block" : "none";
+            document.getElementById("tabLogin").classList.toggle("active", tab === 'login');
+            document.getElementById("tabRegister").classList.toggle("active", tab === 'register');
         }
 
         function showError(msg) {
@@ -1374,7 +1649,6 @@
             document.getElementById("authError").style.display = "none";
         }
 
-        // РЕГИСТРАЦИЯ В GOOGLE FIREBASE
         async function handleRegister() {
             const nick = document.getElementById("regNick").value.trim();
             const pass = document.getElementById("regPass").value;
@@ -1387,7 +1661,7 @@
 
             const lowerNick = nick.toLowerCase();
             const btn = document.getElementById("btnRegSubmit");
-            btn.innerText = "Создание аккаунта...";
+            btn.innerText = "Регистрация...";
             btn.disabled = true;
 
             try {
@@ -1410,7 +1684,7 @@
 
                 await firebaseRequest(`users/${lowerNick}`, "PUT", newUser);
                 localStorage.setItem("thetown_current_user", lowerNick);
-                showToast("Аккаунт успешно зарегистрирован!");
+                showToast("Аккаунт успешно создан!");
                 await syncCurrentUser();
             } catch (err) {
                 showError("Ошибка соединения с базой данных Google!");
@@ -1420,7 +1694,6 @@
             btn.disabled = false;
         }
 
-        // ВХОД ЧЕРЕЗ GOOGLE FIREBASE
         async function handleLogin() {
             const nick = document.getElementById("loginNick").value.trim();
             const pass = document.getElementById("loginPass").value;
@@ -1429,7 +1702,7 @@
 
             const lowerNick = nick.toLowerCase();
             const btn = document.getElementById("btnLoginSubmit");
-            btn.innerText = "Проверка данных...";
+            btn.innerText = "Вход...";
             btn.disabled = true;
 
             try {
@@ -1450,14 +1723,13 @@
                 showToast("Вы вошли как " + user.displayNick);
                 await syncCurrentUser();
             } catch (err) {
-                showError("Ошибка подключения к базе данных!");
+                showError("Ошибка соединения с базой данных Google!");
             }
 
             btn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Войти в аккаунт`;
             btn.disabled = false;
         }
 
-        // СОХРАНЕНИЕ ГОРОДА В FIREBASE
         async function saveTownName() {
             const currentKey = localStorage.getItem("thetown_current_user");
             if (!currentKey) return;
@@ -1465,20 +1737,18 @@
             const townName = document.getElementById("profileTownInput").value.trim();
             try {
                 await firebaseRequest(`users/${currentKey}/town`, "PUT", townName);
-                showToast("Название государства сохранено в облаке!");
+                showToast("Название государства сохранено!");
             } catch (e) {
                 showToast("Ошибка сохранения!");
             }
         }
 
-        // ВЫХОД
         function logoutUser() {
             localStorage.removeItem("thetown_current_user");
             showToast("Вы вышли из аккаунта");
             syncCurrentUser();
         }
 
-        // СИНХРОНИЗАЦИЯ ПРОФИЛЯ С БАЗОЙ GOOGLE
         async function syncCurrentUser() {
             const currentKey = localStorage.getItem("thetown_current_user");
             const authContainer = document.getElementById("authContainer");
@@ -1507,7 +1777,6 @@
                 const headUrl = `https://minotar.net/helm/${user.displayNick}/64.png`;
                 navBtn.innerHTML = `<img src="${headUrl}" alt="head"> ${user.displayNick}`;
 
-                // Проверяем, забанен ли игрок (админов забанить нельзя)
                 if (user.banned && !isAdmin(currentKey)) {
                     authContainer.style.display = "none";
                     profileContainer.style.display = "none";
@@ -1519,7 +1788,6 @@
                     return;
                 }
 
-                // Отображаем обычный профиль
                 authContainer.style.display = "none";
                 bannedContainer.style.display = "none";
                 profileContainer.style.display = "block";
@@ -1530,7 +1798,6 @@
                 document.getElementById("profileRegDate").innerText = user.regDate || "Недавно";
                 document.getElementById("profileTownInput").value = user.town || "";
 
-                // Выдача ролей и открытие кнопки Админ-панели
                 const badge = document.getElementById("profileRoleBadge");
                 if (currentKey === "mrlov3n4ik") {
                     badge.className = "role-badge role-creator";
@@ -1540,6 +1807,11 @@
                 } else if (currentKey === "vunpos") {
                     badge.className = "role-badge role-cofounder";
                     badge.innerHTML = `<i class="fa-solid fa-star"></i> Сооснователь • Контент-креатор`;
+                    navAdminBtn.style.display = "flex";
+                    profileAdminBtn.style.display = "block";
+                } else if (currentKey === "sanraizzz") {
+                    badge.className = "role-badge role-tech";
+                    badge.innerHTML = `<i class="fa-solid fa-headset"></i> Администратор • Техподдержка`;
                     navAdminBtn.style.display = "flex";
                     profileAdminBtn.style.display = "block";
                 } else {
@@ -1554,13 +1826,89 @@
             }
         }
 
+        // ================= ТЕХПОДДЕРЖКА (ТИКЕТЫ) =================
+        async function openSupportModal() {
+            document.getElementById("supportModal").classList.add("active");
+            const currentKey = localStorage.getItem("thetown_current_user");
+            if (currentKey) {
+                document.getElementById("ticketNick").value = currentKey;
+            }
+            await loadUserTickets();
+        }
+
+        function closeSupportModal() {
+            document.getElementById("supportModal").classList.remove("active");
+        }
+
+        async function sendSupportTicket() {
+            const nick = document.getElementById("ticketNick").value.trim();
+            const msg = document.getElementById("ticketMessage").value.trim();
+
+            if (!nick || !msg) return showToast("Заполните ник и текст обращения!");
+
+            const ticketId = "t_" + Date.now();
+            const newTicket = {
+                id: ticketId,
+                nick: nick,
+                message: msg,
+                date: new Date().toLocaleString("ru-RU"),
+                reply: "",
+                repliedBy: ""
+            };
+
+            try {
+                await firebaseRequest(`tickets/${ticketId}`, "PUT", newTicket);
+                document.getElementById("ticketMessage").value = "";
+                showToast("Обращение отправлено в техподдержку!");
+                await loadUserTickets();
+            } catch (e) {
+                showToast("Ошибка отправки обращения!");
+            }
+        }
+
+        async function loadUserTickets() {
+            const listEl = document.getElementById("userTicketsList");
+            const nickFilter = document.getElementById("ticketNick").value.trim().toLowerCase();
+
+            try {
+                const tickets = await firebaseRequest("tickets", "GET") || {};
+                const keys = Object.keys(tickets).reverse();
+                const myTickets = keys.map(k => tickets[k]).filter(t => t && (!nickFilter || t.nick.toLowerCase() === nickFilter));
+
+                if (myTickets.length === 0) {
+                    listEl.innerHTML = `<p style="font-size: 13px; color: var(--text-muted); text-align: center;">Обращений пока нет</p>`;
+                    return;
+                }
+
+                listEl.innerHTML = "";
+                myTickets.forEach(t => {
+                    const replyHtml = t.reply
+                        ? `<div class="ticket-reply-box"><b>Ответ от ${t.repliedBy}:</b><br>${t.reply}</div>`
+                        : `<div style="font-size: 12px; color: var(--accent); margin-top: 6px;"><i class="fa-regular fa-clock"></i> Ожидает ответа техподдержки...</div>`;
+
+                    const div = document.createElement("div");
+                    div.className = "ticket-card";
+                    div.innerHTML = `
+                        <div style="font-size: 12px; color: var(--text-muted); display:flex; justify-content:space-between;">
+                            <b>Игрок: ${t.nick}</b> <span>${t.date}</span>
+                        </div>
+                        <div style="font-size: 14px; margin-top: 5px;">${t.message}</div>
+                        ${replyHtml}
+                    `;
+                    listEl.appendChild(div);
+                });
+            } catch (e) {
+                listEl.innerHTML = `<p style="font-size: 13px; color: #f87171; text-align: center;">Ошибка загрузки</p>`;
+            }
+        }
+
         // ================= АДМИН-ПАНЕЛЬ =================
         async function openAdminModal() {
             const currentKey = localStorage.getItem("thetown_current_user");
-            if (!isAdmin(currentKey)) {
-                return showToast("Доступ запрещен!");
-            }
+            if (!isAdmin(currentKey)) return showToast("Доступ только для Администрации!");
+
             document.getElementById("adminModal").classList.add("active");
+            await loadServerStatus();
             await loadAdminPlayers();
         }
 
@@ -1568,9 +1916,18 @@
             document.getElementById("adminModal").classList.remove("active");
         }
 
+        function switchAdminTab(tab) {
+            document.getElementById("adminPlayersSection").style.display = tab === "players" ? "block" : "none";
+            document.getElementById("adminTicketsSection").style.display = tab === "tickets" ? "block" : "none";
+            document.getElementById("adminTabPlayers").classList.toggle("active", tab === "players");
+            document.getElementById("adminTabTickets").classList.toggle("active", tab === "tickets");
+
+            if (tab === "tickets") loadAdminTickets();
+        }
+
         async function loadAdminPlayers() {
             const listEl = document.getElementById("adminPlayersList");
-            listEl.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Загрузка игроков из базы Google...</p>`;
+            listEl.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;">Загрузка базы игроков...</p>`;
 
             try {
                 const users = await firebaseRequest("users", "GET");
@@ -1591,8 +1948,8 @@
             let townsCount = 0;
 
             keys.forEach(k => {
-                if (cachedUsersDB[k].banned) bannedCount++;
-                if (cachedUsersDB[k].town && cachedUsersDB[k].town.trim() !== "") townsCount++;
+                if (cachedUsersDB[k] && cachedUsersDB[k].banned) bannedCount++;
+                if (cachedUsersDB[k] && cachedUsersDB[k].town && cachedUsersDB[k].town.trim() !== "") townsCount++;
             });
 
             document.getElementById("statTotalPlayers").innerText = total;
@@ -1601,9 +1958,8 @@
 
             const filteredKeys = keys.filter(k => {
                 const u = cachedUsersDB[k];
-                const nickMatch = (u.displayNick || k).toLowerCase().includes(search);
-                const townMatch = (u.town || "").toLowerCase().includes(search);
-                return nickMatch || townMatch;
+                if (!u) return false;
+                return (u.displayNick || k).toLowerCase().includes(search) || (u.town || "").toLowerCase().includes(search);
             });
 
             if (filteredKeys.length === 0) {
@@ -1621,6 +1977,7 @@
                 let roleTag = `<span style="color: var(--primary); font-size: 11px;">[Игрок]</span>`;
                 if (key === "mrlov3n4ik") roleTag = `<span style="color: #f87171; font-size: 11px;">[Создатель]</span>`;
                 if (key === "vunpos") roleTag = `<span style="color: #c084fc; font-size: 11px;">[Сооснователь]</span>`;
+                if (key === "sanraizzz") roleTag = `<span style="color: #22d3ee; font-size: 11px;">[Техподдержка]</span>`;
 
                 let statusInfo = `Город: <b>${u.town || "Нет"}</b> • Рег: ${u.regDate || "-"}`;
                 if (u.banned) {
@@ -1662,21 +2019,20 @@
             });
         }
 
-        // ЗАБАНИТЬ ИГРОКА
         async function banPlayer(targetKey) {
             const currentKey = localStorage.getItem("thetown_current_user");
             if (!isAdmin(currentKey)) return;
 
             const targetUser = cachedUsersDB[targetKey];
             const reason = prompt(`Укажите причину бана для игрока ${targetUser.displayNick}:`, "Нарушение правил сервера");
-            if (reason === null) return; // Отмена
+            if (reason === null) return;
 
-            const adminDisplay = currentKey === "mrlov3n4ik" ? "MrLov3n4ik" : "Vunpos";
+            targetUser.banned = true;
+            targetUser.banReason = reason.trim() || "Нарушение правил";
+            targetUser.bannedBy = getAdminDisplayName(currentKey);
 
             try {
-                await firebaseRequest(`users/${targetKey}/banned`, "PUT", true);
-                await firebaseRequest(`users/${targetKey}/banReason`, "PUT", reason.trim() || "Нарушение правил");
-                await firebaseRequest(`users/${targetKey}/bannedBy`, "PUT", adminDisplay);
+                await firebaseRequest(`users/${targetKey}`, "PUT", targetUser);
                 showToast(`Игрок ${targetUser.displayNick} забанен!`);
                 await loadAdminPlayers();
             } catch (e) {
@@ -1684,16 +2040,17 @@
             }
         }
 
-        // РАЗБАНИТЬ ИГРОКА
         async function unbanPlayer(targetKey) {
             const currentKey = localStorage.getItem("thetown_current_user");
             if (!isAdmin(currentKey)) return;
 
             const targetUser = cachedUsersDB[targetKey];
+            targetUser.banned = false;
+            targetUser.banReason = "";
+            targetUser.bannedBy = "";
+
             try {
-                await firebaseRequest(`users/${targetKey}/banned`, "PUT", false);
-                await firebaseRequest(`users/${targetKey}/banReason`, "PUT", "");
-                await firebaseRequest(`users/${targetKey}/bannedBy`, "PUT", "");
+                await firebaseRequest(`users/${targetKey}`, "PUT", targetUser);
                 showToast(`Игрок ${targetUser.displayNick} разбанен!`);
                 await loadAdminPlayers();
             } catch (e) {
@@ -1701,13 +2058,12 @@
             }
         }
 
-        // УДАЛИТЬ АККАУНТ ИГРОКА
         async function deletePlayer(targetKey) {
             const currentKey = localStorage.getItem("thetown_current_user");
             if (!isAdmin(currentKey)) return;
 
             const targetUser = cachedUsersDB[targetKey];
-            if (!confirm(`Вы точно хотите полностью удалить аккаунт ${targetUser.displayNick} из базы данных?`)) return;
+            if (!confirm(`Удалить аккаунт ${targetUser.displayNick}?`)) return;
 
             try {
                 await firebaseRequest(`users/${targetKey}`, "DELETE");
@@ -1718,7 +2074,86 @@
             }
         }
 
-        window.onload = syncCurrentUser;
+        // Управление тикетами в Админ-панели
+        async function loadAdminTickets() {
+            const listEl = document.getElementById("adminTicketsList");
+            listEl.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;">Загрузка тикетов...</p>`;
+
+            try {
+                cachedTicketsDB = await firebaseRequest("tickets", "GET") || {};
+                const keys = Object.keys(cachedTicketsDB).reverse();
+
+                if (keys.length === 0) {
+                    listEl.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;">Нет обращений в техподдержку</p>`;
+                    return;
+                }
+
+                listEl.innerHTML = "";
+                keys.forEach(k => {
+                    const t = cachedTicketsDB[k];
+                    if (!t) return;
+
+                    const replyStatus = t.reply
+                        ? `<div class="ticket-reply-box"><b>Ответ (${t.repliedBy}):</b> ${t.reply}</div>`
+                        : `<div style="color: var(--accent); font-size: 12px; margin-top: 5px;">Ожидает ответа</div>`;
+
+                    const row = document.createElement("div");
+                    row.className = "ticket-card";
+                    row.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div><b>От игрока: <span style="color:var(--tech);">${t.nick}</span></b> <span style="font-size:11px; color:var(--text-muted);">(${t.date})</span></div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn-unban" onclick="replyToTicket('${k}')"><i class="fa-solid fa-reply"></i> Ответить</button>
+                                <button class="btn-del" onclick="deleteTicket('${k}')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div style="margin-top:8px; font-size:14px;">${t.message}</div>
+                        ${replyStatus}
+                    `;
+                    listEl.appendChild(row);
+                });
+            } catch (e) {
+                listEl.innerHTML = `<p style="text-align: center; color: #f87171; padding: 20px;">Ошибка загрузки тикетов</p>`;
+            }
+        }
+
+        async function replyToTicket(ticketKey) {
+            const currentKey = localStorage.getItem("thetown_current_user");
+            if (!isAdmin(currentKey)) return;
+
+            const t = cachedTicketsDB[ticketKey];
+            const answer = prompt(`Введите ответ для игрока ${t.nick}:`, t.reply || "");
+            if (answer === null) return;
+
+            t.reply = answer.trim();
+            t.repliedBy = getAdminDisplayName(currentKey);
+
+            try {
+                await firebaseRequest(`tickets/${ticketKey}`, "PUT", t);
+                showToast("Ответ отправлен игроку!");
+                await loadAdminTickets();
+            } catch (e) {
+                showToast("Ошибка отправки ответа!");
+            }
+        }
+
+        async function deleteTicket(ticketKey) {
+            const currentKey = localStorage.getItem("thetown_current_user");
+            if (!isAdmin(currentKey)) return;
+
+            try {
+                await firebaseRequest(`tickets/${ticketKey}`, "DELETE");
+                showToast("Тикет удален!");
+                await loadAdminTickets();
+            } catch (e) {
+                showToast("Ошибка удаления!");
+            }
+        }
+
+        window.onload = () => {
+            loadServerStatus();
+            syncCurrentUser();
+        };
     </script>
 </body>
 </html>

@@ -907,6 +907,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .modal-close {
@@ -1333,7 +1334,7 @@
                     <i class="fa-solid fa-gamepad"></i>
                     <span>Скопировать IP: f1.rustix.me:35223</span>
                 </button>
-                <a href="https://discord.gg/VBt99RQRN" target="_blank" rel="noopener" class="btn btn-discord">
+                <a href="https://discord.gg/vrdNF4nHX" target="_blank" rel="noopener" class="btn btn-discord">
                     <i class="fa-brands fa-discord"></i>
                     <span>Наш Discord</span>
                 </a>
@@ -1429,7 +1430,7 @@
                     <h3>Зайди в Discord</h3>
                     <p>Вступи в наше официальное сообщество Discord. Там публикуются мировые новости, дипломатические договоры, правила и ведутся наборы в города.</p>
                     <div class="card-action">
-                        <a href="https://discord.gg/VBt99RQRN" target="_blank" rel="noopener" class="btn btn-discord" style="width: 100%;">
+                        <a href="https://discord.gg/vrdNF4nHX" target="_blank" rel="noopener" class="btn btn-discord" style="width: 100%;">
                             <i class="fa-brands fa-discord"></i>
                             <span>Присоединиться</span>
                         </a>
@@ -1503,7 +1504,7 @@
                         </p>
                     </div>
                     <div>
-                        <a href="https://discord.gg/VBt99RQRN" target="_blank" rel="noopener" class="btn btn-amber" style="width: 100%;">
+                        <a href="https://discord.gg/vrdNF4nHX" target="_blank" rel="noopener" class="btn btn-amber" style="width: 100%;">
                             <i class="fa-solid fa-paper-plane"></i>
                             <span>Подать заявку в Discord</span>
                         </a>
@@ -1580,7 +1581,7 @@
                         <i class="fa-solid fa-envelope-open-text"></i>
                         <span>Написать в техподдержку</span>
                     </button>
-                    <a href="https://discord.gg/VBt99RQRN" target="_blank" rel="noopener" class="btn btn-discord" style="padding: 15px 24px;">
+                    <a href="https://discord.gg/vrdNF4nHX" target="_blank" rel="noopener" class="btn btn-discord" style="padding: 15px 24px;">
                         <i class="fa-brands fa-discord"></i>
                         <span>Тикеты в Discord</span>
                     </a>
@@ -1600,7 +1601,7 @@
                 <a href="#about">О сервере</a>
                 <a href="#voice">Simple Voice Chat</a>
                 <a href="https://www.youtube.com/@Vunpos" target="_blank" rel="noopener">YouTube</a>
-                <a href="https://discord.gg/VBt99RQRN" target="_blank" rel="noopener">Discord</a>
+                <a href="https://discord.gg/vrdNF4nHX" target="_blank" rel="noopener">Discord</a>
                 <a href="javascript:void(0)" onclick="openModal('supportModal')">Техподдержка</a>
             </div>
         </div>
@@ -1764,9 +1765,6 @@
                 <div class="modal-title">
                     <i class="fa-solid fa-shield-halved" style="color: var(--accent-purple);"></i>
                     <span>Админ-панель управления THETOWN</span>
-                    <span id="firebaseSyncIndicator" class="role-badge" style="margin: 0; font-size: 0.7rem; padding: 4px 10px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35);">
-                        <i class="fa-solid fa-cloud"></i> БД Активна
-                    </span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <button class="btn btn-dark btn-sm" onclick="manualRefreshDB()">
@@ -1856,13 +1854,8 @@
            1. CONFIGURATION & CONSTANTS
         ========================================================= */
         const FIREBASE_BASE_URL = 'https://thetown-6fbfa-default-rtdb.firebaseio.com';
-        const FIREBASE_EU_FALLBACK_URL = 'https://thetown-6fbfa-default-rtdb.europe-west1.firebasedatabase.app';
-        let activeFirebaseUrl = FIREBASE_BASE_URL;
-        let isCloudConnected = false;
-
         const SERVER_IP = 'f1.rustix.me:35223';
         const LOCAL_STORAGE_USER_KEY = 'thetown_current_user';
-        const LOCAL_STORAGE_DB_BACKUP = 'thetown_db_state_v2';
 
         const ADMINS_MAP = {
             'vunpos': {
@@ -1885,55 +1878,14 @@
             }
         };
 
-        // Cross-tab instant synchronization channel
-        const syncChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('thetown_realtime_sync') : null;
-        if (syncChannel) {
-            syncChannel.onmessage = (ev) => {
-                if (ev.data && ev.data.type === 'DB_UPDATED') {
-                    dbState = loadLocalBackup();
-                    updateAllUI();
-                }
-            };
-        }
-
-        function loadLocalBackup() {
-            try {
-                const raw = localStorage.getItem(LOCAL_STORAGE_DB_BACKUP);
-                if (raw) {
-                    const parsed = JSON.parse(raw);
-                    return {
-                        users: parsed.users || {},
-                        tickets: parsed.tickets || {},
-                        serverStatus: parsed.serverStatus || 'online',
-                        deletedUsers: parsed.deletedUsers || {},
-                        deletedTickets: parsed.deletedTickets || {}
-                    };
-                }
-            } catch (e) {}
-            return {
-                users: {},
-                tickets: {},
-                serverStatus: 'online',
-                deletedUsers: {},
-                deletedTickets: {}
-            };
-        }
-
-        function saveLocalBackup(broadcast = true) {
-            try {
-                localStorage.setItem(LOCAL_STORAGE_DB_BACKUP, JSON.stringify(dbState));
-                if (broadcast && syncChannel) {
-                    syncChannel.postMessage({ type: 'DB_UPDATED' });
-                }
-            } catch (e) {}
-        }
-
-        let dbState = loadLocalBackup();
-        let lastSnapshotHash = '';
-        let currentUserNickLower = localStorage.getItem(LOCAL_STORAGE_USER_KEY) || null;
+        let dbState = {
+            users: {},
+            tickets: {},
+            serverStatus: 'online'
+        };
 
         /* =========================================================
-           2. HELPER FUNCTIONS
+           2. HELPER & NORMALIZATION FUNCTIONS
         ========================================================= */
         function normalizeKey(nick) {
             return String(nick || '')
@@ -1941,6 +1893,20 @@
                 .toLowerCase()
                 .replace(/[.#$\[\]\/]/g, '_');
         }
+
+        function getSavedUserLower() {
+            const raw = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
+            if (!raw) return null;
+            try {
+                if (raw.startsWith('{')) {
+                    const parsed = JSON.parse(raw);
+                    return normalizeKey(parsed.nick || parsed.username || parsed.login || '');
+                }
+            } catch (e) {}
+            return normalizeKey(raw);
+        }
+
+        let currentUserNickLower = getSavedUserLower();
 
         function isAdmin(nick) {
             if (!nick) return false;
@@ -1977,6 +1943,62 @@
             const hh = String(now.getHours()).padStart(2, '0');
             const mm = String(now.getMinutes()).padStart(2, '0');
             return `${d}.${m}.${y} ${hh}:${mm}`;
+        }
+
+        // Normalizes any user structure from Firebase so all records are guaranteed to show up
+        function normalizeUsersMap(rawUsers) {
+            const result = {};
+            if (!rawUsers || typeof rawUsers !== 'object') return result;
+
+            for (const [rawKey, val] of Object.entries(rawUsers)) {
+                if (!val || typeof val !== 'object') continue;
+                const rawNick = val.nick || val.nickname || val.username || val.name || val.login || rawKey;
+                const lowerKey = normalizeKey(rawNick);
+                if (!lowerKey) continue;
+
+                const role = getRoleInfo(rawNick);
+                const displayNick = isAdmin(rawNick) ? role.displayNick : String(rawNick).trim();
+
+                result[lowerKey] = {
+                    nick: displayNick,
+                    password: val.password !== undefined ? String(val.password) : (val.pass !== undefined ? String(val.pass) : ''),
+                    city: val.city || val.town || val.empire || val.state || 'Не указан',
+                    createdAt: val.createdAt || val.regDate || val.date || val.registeredAt || '—',
+                    banned: Boolean(val.banned || val.isBanned || val.ban),
+                    banReason: val.banReason || val.reason || '',
+                    _fbKey: rawKey
+                };
+            }
+            return result;
+        }
+
+        // Normalizes any ticket structure from Firebase so all tickets & replies are guaranteed to show up
+        function normalizeTicketsMap(rawTickets) {
+            const result = {};
+            if (!rawTickets || typeof rawTickets !== 'object') return result;
+
+            for (const [rawKey, val] of Object.entries(rawTickets)) {
+                if (!val || typeof val !== 'object') continue;
+                const ticketId = String(val.id || rawKey);
+                const nick = val.nick || val.nickname || val.username || val.author || val.user || val.name || 'Игрок';
+                const text = val.text || val.message || val.msg || val.problem || val.issue || val.content || val.question || '';
+                const reply = val.reply || val.answer || val.response || val.adminReply || '';
+                const repliedBy = val.repliedBy || val.admin || val.answeredBy || val.responder || '';
+                const createdAt = val.createdAt || val.date || val.time || '';
+                const timestamp = Number(val.timestamp || val.timeMs || 0);
+
+                result[ticketId] = {
+                    id: ticketId,
+                    nick: String(nick).trim(),
+                    text: String(text),
+                    createdAt: String(createdAt),
+                    timestamp: timestamp,
+                    reply: String(reply),
+                    repliedBy: String(repliedBy),
+                    _fbKey: rawKey
+                };
+            }
+            return result;
         }
 
         function showToast(message, type = 'info') {
@@ -2045,10 +2067,6 @@
                     showToast('Доступ разрешён только руководству THETOWN!', 'error');
                     return;
                 }
-                renderAdminPanel();
-            }
-            if (modalId === 'accountModal') {
-                renderAccountModal();
             }
             if (modalId === 'supportModal') {
                 const currentUser = currentUserNickLower ? dbState.users[currentUserNickLower] : null;
@@ -2056,9 +2074,12 @@
                 if (currentUser && !nickInput.value) {
                     nickInput.value = currentUser.nick;
                 }
-                renderPublicTickets();
             }
+
+            updateAllUI();
             document.getElementById(modalId).classList.add('active');
+            // Pull fresh data from Firebase immediately when opening any modal
+            syncAllFromFirebase();
         }
 
         function closeModal(modalId) {
@@ -2088,114 +2109,55 @@
         }
 
         /* =========================================================
-           4. FIREBASE REST API (PURE PATHS + ZERO-ERROR SYNC)
+           4. FIREBASE REST API (PURE PATHS, NO QUERY PARAMS, NO CACHE)
         ========================================================= */
-        async function firebaseRequest(cleanPath, method = 'GET', payload = undefined) {
-            const urlsToTry = [activeFirebaseUrl];
-            if (activeFirebaseUrl === FIREBASE_BASE_URL) {
-                urlsToTry.push(FIREBASE_EU_FALLBACK_URL);
-            } else {
-                urlsToTry.push(FIREBASE_BASE_URL);
-            }
+        async function syncAllFromFirebase() {
+            try {
+                const response = await fetch(`${FIREBASE_BASE_URL}/.json`, {
+                    method: 'GET',
+                    cache: 'no-store'
+                });
 
-            for (const baseUrl of urlsToTry) {
-                try {
-                    const opts = { method };
-                    if (payload !== undefined) {
-                        opts.body = JSON.stringify(payload);
+                if (response.ok) {
+                    const data = await response.json() || {};
+                    dbState.users = normalizeUsersMap(data.users || {});
+                    dbState.tickets = normalizeTicketsMap(data.tickets || {});
+
+                    let status = 'online';
+                    if (data.settings && data.settings.serverStatus) {
+                        status = data.settings.serverStatus;
+                    } else if (data.serverStatus) {
+                        status = data.serverStatus;
                     }
-                    const res = await fetch(`${baseUrl}${cleanPath}`, opts);
-                    if (res.ok) {
-                        const data = await res.json();
-                        if (!data || !data.error) {
-                            activeFirebaseUrl = baseUrl;
-                            isCloudConnected = true;
-                            updateCloudBadge();
-                            return { ok: true, data };
-                        }
-                    }
-                } catch (e) {
-                    // Continue to next endpoint or local fallback silently
-                }
-            }
-
-            isCloudConnected = false;
-            updateCloudBadge();
-            return { ok: false, data: null };
-        }
-
-        function updateCloudBadge() {
-            const badge = document.getElementById('firebaseSyncIndicator');
-            if (!badge) return;
-            if (isCloudConnected) {
-                badge.style.background = 'rgba(16, 185, 129, 0.15)';
-                badge.style.color = '#34d399';
-                badge.style.borderColor = 'rgba(16, 185, 129, 0.35)';
-                badge.innerHTML = '<i class="fa-solid fa-cloud-check"></i> Firebase Cloud Активен';
-            } else {
-                badge.style.background = 'rgba(245, 158, 11, 0.15)';
-                badge.style.color = '#fbbf24';
-                badge.style.borderColor = 'rgba(245, 158, 11, 0.35)';
-                badge.innerHTML = '<i class="fa-solid fa-hard-drive"></i> Локальная БД (проверьте Rules в Firebase)';
-            }
-        }
-
-        async function syncAllFromFirebase(forceRender = false) {
-            const result = await firebaseRequest('/.json', 'GET');
-
-            if (result.ok && result.data && typeof result.data === 'object') {
-                const cloudUsers = result.data.users || {};
-                const cloudTickets = result.data.tickets || {};
-                const cloudStatus = (result.data.settings && result.data.settings.serverStatus)
-                    ? result.data.settings.serverStatus
-                    : null;
-
-                // Push any local users not yet in Firebase Cloud
-                for (const [uKey, uVal] of Object.entries(dbState.users)) {
-                    if (!cloudUsers[uKey] && !(dbState.deletedUsers && dbState.deletedUsers[uKey])) {
-                        firebaseRequest(`/users/${uKey}.json`, 'PUT', uVal);
-                        cloudUsers[uKey] = uVal;
-                    }
+                    dbState.serverStatus = status;
+                    updateAllUI();
+                    return;
                 }
 
-                // Push any local tickets not yet in Firebase Cloud
-                for (const [tKey, tVal] of Object.entries(dbState.tickets)) {
-                    if (!cloudTickets[tKey] && !(dbState.deletedTickets && dbState.deletedTickets[tKey])) {
-                        firebaseRequest(`/tickets/${tKey}.json`, 'PUT', tVal);
-                        cloudTickets[tKey] = tVal;
+                // Fallback: if root /.json is restricted, fetch child nodes directly
+                const [uRes, tRes, sRes] = await Promise.all([
+                    fetch(`${FIREBASE_BASE_URL}/users.json`, { method: 'GET', cache: 'no-store' }),
+                    fetch(`${FIREBASE_BASE_URL}/tickets.json`, { method: 'GET', cache: 'no-store' }),
+                    fetch(`${FIREBASE_BASE_URL}/settings/serverStatus.json`, { method: 'GET', cache: 'no-store' })
+                ]);
+
+                if (uRes.ok) {
+                    const uData = await uRes.json();
+                    dbState.users = normalizeUsersMap(uData || {});
+                }
+                if (tRes.ok) {
+                    const tData = await tRes.json();
+                    dbState.tickets = normalizeTicketsMap(tData || {});
+                }
+                if (sRes.ok) {
+                    const sData = await sRes.json();
+                    if (sData && typeof sData === 'string') {
+                        dbState.serverStatus = sData;
                     }
                 }
-
-                dbState.users = { ...dbState.users, ...cloudUsers };
-                dbState.tickets = { ...dbState.tickets, ...cloudTickets };
-
-                // Respect locally deleted items
-                if (dbState.deletedUsers) {
-                    for (const delKey of Object.keys(dbState.deletedUsers)) {
-                        delete dbState.users[delKey];
-                    }
-                }
-                if (dbState.deletedTickets) {
-                    for (const delKey of Object.keys(dbState.deletedTickets)) {
-                        delete dbState.tickets[delKey];
-                    }
-                }
-
-                if (cloudStatus) {
-                    dbState.serverStatus = cloudStatus;
-                }
-
-                saveLocalBackup(false);
-            }
-
-            const snapshotHash = JSON.stringify({
-                u: dbState.users,
-                t: dbState.tickets,
-                s: dbState.serverStatus
-            });
-
-            if (forceRender || snapshotHash !== lastSnapshotHash) {
-                lastSnapshotHash = snapshotHash;
+                updateAllUI();
+            } catch (err) {
+                console.error('Ошибка синхронизации с Firebase:', err);
                 updateAllUI();
             }
         }
@@ -2203,11 +2165,11 @@
         async function manualRefreshDB() {
             const icon = document.getElementById('adminRefreshIcon');
             if (icon) icon.classList.add('fa-spin');
-            await syncAllFromFirebase(true);
+            await syncAllFromFirebase();
             setTimeout(() => {
                 if (icon) icon.classList.remove('fa-spin');
             }, 400);
-            showToast('База данных обновлена!', 'info');
+            showToast('Данные из базы Firebase обновлены!', 'info');
         }
 
         /* =========================================================
@@ -2258,6 +2220,13 @@
                     <span>${escapeHTML(user.nick)}</span>
                 `;
                 adminBtn.style.display = isAdmin(user.nick) ? 'inline-flex' : 'none';
+            } else if (currentUserNickLower) {
+                const role = getRoleInfo(currentUserNickLower);
+                accountBtn.innerHTML = `
+                    <img src="https://minotar.net/helm/${encodeURIComponent(role.displayNick)}/150.png" alt="${escapeHTML(role.displayNick)}" onerror="this.src='https://minotar.net/helm/MHF_Steve/150.png'">
+                    <span>${escapeHTML(role.displayNick)}</span>
+                `;
+                adminBtn.style.display = isAdmin(currentUserNickLower) ? 'inline-flex' : 'none';
             } else {
                 accountBtn.innerHTML = `
                     <i class="fa-solid fa-user"></i>
@@ -2297,7 +2266,7 @@
             const saveCityBtn = document.getElementById('profileSaveCityBtn');
 
             if (document.activeElement !== cityInput) {
-                cityInput.value = user.city || '';
+                cityInput.value = (user.city && user.city !== 'Не указан') ? user.city : '';
             }
 
             if (user.banned) {
@@ -2387,13 +2356,9 @@
             btn.disabled = true;
 
             try {
-                let existing = dbState.users[lowerNick] || null;
-                const cloudCheck = await firebaseRequest(`/users/${lowerNick}.json`, 'GET');
-                if (cloudCheck.ok && cloudCheck.data && cloudCheck.data.nick) {
-                    existing = cloudCheck.data;
-                }
+                await syncAllFromFirebase();
 
-                if (existing && existing.nick) {
+                if (dbState.users[lowerNick]) {
                     showToast('Этот игровой никнейм уже зарегистрирован!', 'error');
                     btn.disabled = false;
                     return;
@@ -2411,20 +2376,23 @@
                     banReason: ''
                 };
 
-                if (dbState.deletedUsers) {
-                    delete dbState.deletedUsers[lowerNick];
-                }
-                dbState.users[lowerNick] = newUserObj;
-                saveLocalBackup();
+                const putRes = await fetch(`${FIREBASE_BASE_URL}/users/${lowerNick}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newUserObj)
+                });
 
-                await firebaseRequest(`/users/${lowerNick}.json`, 'PUT', newUserObj);
+                if (!putRes.ok) throw new Error('PUT failed');
 
+                dbState.users[lowerNick] = { ...newUserObj, _fbKey: lowerNick };
                 currentUserNickLower = lowerNick;
                 localStorage.setItem(LOCAL_STORAGE_USER_KEY, lowerNick);
 
                 document.getElementById('registerForm').reset();
                 updateAllUI();
                 showToast(`Добро пожаловать на THETOWN, ${finalDisplayNick}!`, 'success');
+            } catch (err) {
+                showToast('Не удалось записать аккаунт в БД Firebase', 'error');
             } finally {
                 btn.disabled = false;
             }
@@ -2440,14 +2408,26 @@
             btn.disabled = true;
 
             try {
+                await syncAllFromFirebase();
                 let user = dbState.users[lowerNick] || null;
-                const cloudCheck = await firebaseRequest(`/users/${lowerNick}.json`, 'GET');
-                if (cloudCheck.ok && cloudCheck.data && cloudCheck.data.nick) {
-                    user = cloudCheck.data;
+
+                if (!user) {
+                    const directRes = await fetch(`${FIREBASE_BASE_URL}/users/${lowerNick}.json`, {
+                        method: 'GET',
+                        cache: 'no-store'
+                    });
+                    if (directRes.ok) {
+                        const directUser = await directRes.json();
+                        if (directUser && typeof directUser === 'object') {
+                            const normalized = normalizeUsersMap({ [lowerNick]: directUser });
+                            user = normalized[lowerNick] || null;
+                            if (user) dbState.users[lowerNick] = user;
+                        }
+                    }
                 }
 
                 if (!user || !user.nick) {
-                    showToast('Аккаунт не найден! Перейдите во вкладку «Регистрация».', 'error');
+                    showToast('Аккаунт с таким никнеймом не найден!', 'error');
                     btn.disabled = false;
                     return;
                 }
@@ -2458,15 +2438,14 @@
                     return;
                 }
 
-                dbState.users[lowerNick] = user;
-                saveLocalBackup();
-
                 currentUserNickLower = lowerNick;
                 localStorage.setItem(LOCAL_STORAGE_USER_KEY, lowerNick);
 
                 document.getElementById('loginForm').reset();
                 updateAllUI();
                 showToast(`Вы вошли как ${user.nick}`, 'success');
+            } catch (err) {
+                showToast('Ошибка при входе в аккаунт', 'error');
             } finally {
                 btn.disabled = false;
             }
@@ -2483,14 +2462,30 @@
             }
 
             const newCity = document.getElementById('profileCityInput').value.trim() || 'Не указан';
-            const updatedUser = { ...user, city: newCity };
+            const fbKey = user._fbKey || currentUserNickLower;
+            const payload = {
+                nick: user.nick,
+                password: user.password,
+                city: newCity,
+                createdAt: user.createdAt,
+                banned: user.banned,
+                banReason: user.banReason
+            };
 
-            dbState.users[currentUserNickLower] = updatedUser;
-            saveLocalBackup();
-            updateAllUI();
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/users/${fbKey}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('Save failed');
 
-            await firebaseRequest(`/users/${currentUserNickLower}.json`, 'PUT', updatedUser);
-            showToast('Город / Империя успешно сохранены!', 'success');
+                dbState.users[currentUserNickLower] = { ...payload, _fbKey: fbKey };
+                updateAllUI();
+                showToast('Город / Империя успешно сохранены!', 'success');
+            } catch (err) {
+                showToast('Не удалось сохранить изменения', 'error');
+            }
         }
 
         function handleLogout() {
@@ -2525,14 +2520,20 @@
             };
 
             try {
-                dbState.tickets[ticketId] = newTicket;
-                saveLocalBackup();
+                const res = await fetch(`${FIREBASE_BASE_URL}/tickets/${ticketId}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newTicket)
+                });
 
+                if (!res.ok) throw new Error('Ticket submit failed');
+
+                dbState.tickets[ticketId] = { ...newTicket, _fbKey: ticketId };
                 document.getElementById('ticketTextInput').value = '';
                 updateAllUI();
-
-                await firebaseRequest(`/tickets/${ticketId}.json`, 'PUT', newTicket);
                 showToast('Ваше обращение отправлено в техподдержку!', 'success');
+            } catch (err) {
+                showToast('Ошибка при отправке обращения', 'error');
             } finally {
                 btn.disabled = false;
             }
@@ -2542,19 +2543,22 @@
            8. ADMIN PANEL LOGIC & ACTIONS
         ========================================================= */
         function renderAdminPanel() {
-            if (!currentUserNickLower || !isAdmin(currentUserNickLower)) return;
-
-            updateCloudBadge();
-
             const usersArr = Object.values(dbState.users || {});
             const ticketsArr = Object.values(dbState.tickets || {});
             const bannedCount = usersArr.filter(u => u && u.banned).length;
             const activeCount = usersArr.length - bannedCount;
 
-            document.getElementById('statTotalUsers').textContent = usersArr.length;
-            document.getElementById('statActiveUsers').textContent = activeCount;
-            document.getElementById('statBannedUsers').textContent = bannedCount;
-            document.getElementById('statTotalTickets').textContent = ticketsArr.length;
+            const elTotalUsers = document.getElementById('statTotalUsers');
+            if (elTotalUsers) elTotalUsers.textContent = usersArr.length;
+
+            const elActiveUsers = document.getElementById('statActiveUsers');
+            if (elActiveUsers) elActiveUsers.textContent = activeCount;
+
+            const elBannedUsers = document.getElementById('statBannedUsers');
+            if (elBannedUsers) elBannedUsers.textContent = bannedCount;
+
+            const elTotalTickets = document.getElementById('statTotalTickets');
+            if (elTotalTickets) elTotalTickets.textContent = ticketsArr.length;
 
             renderAdminPlayers();
             renderAdminTickets();
@@ -2578,7 +2582,7 @@
             if (filtered.length === 0) {
                 listEl.innerHTML = `
                     <div style="text-align: center; padding: 28px; color: var(--text-muted);">
-                        Игроки по вашему запросу не найдены.
+                        Игроки в базе данных не найдены.
                     </div>
                 `;
                 return;
@@ -2690,12 +2694,20 @@
         async function setServerStatus(newStatus) {
             if (!currentUserNickLower || !isAdmin(currentUserNickLower)) return;
 
-            dbState.serverStatus = newStatus;
-            saveLocalBackup();
-            updateAllUI();
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/settings/serverStatus.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newStatus)
+                });
+                if (!res.ok) throw new Error('Status update failed');
 
-            await firebaseRequest('/settings/serverStatus.json', 'PUT', newStatus);
-            showToast('Статус сервера обновлён!', 'success');
+                dbState.serverStatus = newStatus;
+                updateAllUI();
+                showToast('Статус сервера обновлён!', 'success');
+            } catch (err) {
+                showToast('Ошибка при смене статуса сервера', 'error');
+            }
         }
 
         async function adminBanPlayer(lowerKey) {
@@ -2709,18 +2721,30 @@
             const reason = prompt(`Укажите причину бана для игрока ${target.nick}:`, 'Нарушение правил сервера');
             if (reason === null) return;
 
+            const fbKey = target._fbKey || lowerKey;
             const updated = {
-                ...target,
+                nick: target.nick,
+                password: target.password,
+                city: target.city,
+                createdAt: target.createdAt,
                 banned: true,
                 banReason: reason.trim() || 'Нарушение правил сервера'
             };
 
-            dbState.users[lowerKey] = updated;
-            saveLocalBackup();
-            updateAllUI();
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/users/${fbKey}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updated)
+                });
+                if (!res.ok) throw new Error('Ban error');
 
-            await firebaseRequest(`/users/${lowerKey}.json`, 'PUT', updated);
-            showToast(`Игрок ${target.nick} заблокирован`, 'success');
+                dbState.users[lowerKey] = { ...updated, _fbKey: fbKey };
+                updateAllUI();
+                showToast(`Игрок ${target.nick} заблокирован`, 'success');
+            } catch (err) {
+                showToast('Ошибка при блокировке игрока', 'error');
+            }
         }
 
         async function adminUnbanPlayer(lowerKey) {
@@ -2728,18 +2752,30 @@
             const target = dbState.users[lowerKey];
             if (!target) return;
 
+            const fbKey = target._fbKey || lowerKey;
             const updated = {
-                ...target,
+                nick: target.nick,
+                password: target.password,
+                city: target.city,
+                createdAt: target.createdAt,
                 banned: false,
                 banReason: ''
             };
 
-            dbState.users[lowerKey] = updated;
-            saveLocalBackup();
-            updateAllUI();
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/users/${fbKey}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updated)
+                });
+                if (!res.ok) throw new Error('Unban error');
 
-            await firebaseRequest(`/users/${lowerKey}.json`, 'PUT', updated);
-            showToast(`Игрок ${target.nick} разблокирован`, 'success');
+                dbState.users[lowerKey] = { ...updated, _fbKey: fbKey };
+                updateAllUI();
+                showToast(`Игрок ${target.nick} разблокирован`, 'success');
+            } catch (err) {
+                showToast('Ошибка при разблокировке игрока', 'error');
+            }
         }
 
         async function adminDeletePlayer(lowerKey) {
@@ -2752,14 +2788,19 @@
 
             if (!confirm(`Вы действительно хотите безвозвратно удалить аккаунт игрока ${target.nick}?`)) return;
 
-            delete dbState.users[lowerKey];
-            dbState.deletedUsers = dbState.deletedUsers || {};
-            dbState.deletedUsers[lowerKey] = true;
-            saveLocalBackup();
-            updateAllUI();
+            const fbKey = target._fbKey || lowerKey;
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/users/${fbKey}.json`, {
+                    method: 'DELETE'
+                });
+                if (!res.ok) throw new Error('Delete player error');
 
-            await firebaseRequest(`/users/${lowerKey}.json`, 'DELETE');
-            showToast(`Аккаунт ${target.nick} удалён`, 'info');
+                delete dbState.users[lowerKey];
+                updateAllUI();
+                showToast(`Аккаунт ${target.nick} удалён`, 'info');
+            } catch (err) {
+                showToast('Ошибка при удалении аккаунта', 'error');
+            }
         }
 
         async function adminReplyTicket(ticketId) {
@@ -2773,32 +2814,52 @@
             const replyText = prompt(`Введите ответ на обращение игрока ${ticket.nick}:`, ticket.reply || '');
             if (replyText === null) return;
 
+            const fbKey = ticket._fbKey || ticketId;
             const updatedTicket = {
-                ...ticket,
+                id: ticket.id,
+                nick: ticket.nick,
+                text: ticket.text,
+                createdAt: ticket.createdAt,
+                timestamp: ticket.timestamp,
                 reply: replyText.trim(),
                 repliedBy: adminDisplayNick
             };
 
-            dbState.tickets[ticketId] = updatedTicket;
-            saveLocalBackup();
-            updateAllUI();
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/tickets/${fbKey}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedTicket)
+                });
+                if (!res.ok) throw new Error('Reply error');
 
-            await firebaseRequest(`/tickets/${ticketId}.json`, 'PUT', updatedTicket);
-            showToast('Ответ на тикет сохранён!', 'success');
+                dbState.tickets[ticketId] = { ...updatedTicket, _fbKey: fbKey };
+                updateAllUI();
+                showToast('Ответ на тикет сохранён!', 'success');
+            } catch (err) {
+                showToast('Ошибка при сохранении ответа', 'error');
+            }
         }
 
         async function adminDeleteTicket(ticketId) {
             if (!currentUserNickLower || !isAdmin(currentUserNickLower)) return;
             if (!confirm('Удалить этот тикет из базы данных?')) return;
 
-            delete dbState.tickets[ticketId];
-            dbState.deletedTickets = dbState.deletedTickets || {};
-            dbState.deletedTickets[ticketId] = true;
-            saveLocalBackup();
-            updateAllUI();
+            const ticket = dbState.tickets[ticketId];
+            const fbKey = (ticket && ticket._fbKey) ? ticket._fbKey : ticketId;
 
-            await firebaseRequest(`/tickets/${ticketId}.json`, 'DELETE');
-            showToast('Тикет удалён', 'info');
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/tickets/${fbKey}.json`, {
+                    method: 'DELETE'
+                });
+                if (!res.ok) throw new Error('Delete ticket error');
+
+                delete dbState.tickets[ticketId];
+                updateAllUI();
+                showToast('Тикет удалён', 'info');
+            } catch (err) {
+                showToast('Ошибка при удалении тикета', 'error');
+            }
         }
 
         /* =========================================================
@@ -2806,9 +2867,9 @@
         ========================================================= */
         window.addEventListener('DOMContentLoaded', () => {
             updateAllUI();
-            syncAllFromFirebase(true);
+            syncAllFromFirebase();
             setInterval(() => {
-                syncAllFromFirebase(false);
+                syncAllFromFirebase();
             }, 4000);
         });
     </script>

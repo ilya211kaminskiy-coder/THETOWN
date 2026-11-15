@@ -1,4 +1,3 @@
-
 ```html
 <!DOCTYPE html>
 <html lang="ru">
@@ -1283,65 +1282,36 @@
     <script>
         const SERVER_IP = "f1.rustix.me:35223";
         const ADMINS = ["mrlov3n4ik", "vunpos"];
-        const BASE_FIREBASE = "https://thetown-6fbfa-default-rtdb.firebaseio.com";
 
-        // Список маршрутов: 1) Напрямую, 2) Прокси-шлюз 1 (без VPN в РФ), 3) Прокси-шлюз 2 (резерв)
-        const ROUTES = [
-            (url) => url,
-            (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-            (url) => `https://thingproxy.freeboard.io/fetch/${url}`
+        // Возможные адреса твоей базы данных Google Firebase (автоопределение региона)
+        const DB_URLS = [
+            "https://thetown-6fbfa-default-rtdb.firebaseio.com",
+            "https://thetown-6fbfa-default-rtdb.europe-west1.firebasedatabase.app"
         ];
-
-        let activeRouteIndex = parseInt(localStorage.getItem("thetown_route_idx") || "0");
+        let activeDbUrl = localStorage.getItem("thetown_db_url") || DB_URLS[0];
         let cachedUsersDB = {};
 
-        // Быстрый запрос с тайм-аутом (чтобы не зависало, если провайдер блокирует прямой доступ)
-        async function fetchWithTimeout(url, options, timeout = 4000) {
-            const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), timeout);
-            try {
-                const res = await fetch(url, { ...options, signal: controller.signal });
-                clearTimeout(timer);
-                return res;
-            } catch (e) {
-                clearTimeout(timer);
-                throw e;
-            }
-        }
-
-        // Умное обращение к базе данных (с авто-обходом блокировок РКН/провайдеров без VPN)
+        // Функция обращения к Google Firebase
         async function firebaseRequest(path, method = "GET", body = null) {
-            const targetUrl = `${BASE_FIREBASE}/${path}.json`;
             const options = {
                 method: method,
                 headers: { "Content-Type": "application/json" }
             };
             if (body !== null) options.body = JSON.stringify(body);
 
-            // Сначала пробуем последний рабочий маршрут, затем все остальные
-            const order = [activeRouteIndex, 0, 1, 2].filter((v, i, a) => a.indexOf(v) === i);
-
-            for (let idx of order) {
+            for (let url of [activeDbUrl, ...DB_URLS]) {
                 try {
-                    const proxyUrl = ROUTES[idx](targetUrl);
-                    const res = await fetchWithTimeout(proxyUrl, options, 4500);
-
-                    if (res.status === 401 || res.status === 403) {
-                        throw new Error("RULES_DENIED");
-                    }
-
+                    const res = await fetch(`${url}/${path}.json`, options);
                     if (res.ok) {
-                        activeRouteIndex = idx;
-                        localStorage.setItem("thetown_route_idx", idx.toString());
-                        const text = await res.text();
-                        return text ? JSON.parse(text) : null;
+                        activeDbUrl = url;
+                        localStorage.setItem("thetown_db_url", url);
+                        return await res.json();
                     }
-                } catch (err) {
-                    if (err.message === "RULES_DENIED") throw err;
-                    // Переключаемся на следующий шлюз
+                } catch (e) {
+                    // Пробуем следующий региональный URL
                 }
             }
-            throw new Error("ALL_ROUTES_FAILED");
+            throw new Error("Не удалось подключиться к базе Firebase");
         }
 
         // Проверка, является ли пользователь админом
@@ -1404,7 +1374,7 @@
             document.getElementById("authError").style.display = "none";
         }
 
-        // РЕГИСТРАЦИЯ
+        // РЕГИСТРАЦИЯ В GOOGLE FIREBASE
         async function handleRegister() {
             const nick = document.getElementById("regNick").value.trim();
             const pass = document.getElementById("regPass").value;
@@ -1417,7 +1387,7 @@
 
             const lowerNick = nick.toLowerCase();
             const btn = document.getElementById("btnRegSubmit");
-            btn.innerText = "Подключение к серверу...";
+            btn.innerText = "Создание аккаунта...";
             btn.disabled = true;
 
             try {
@@ -1443,18 +1413,14 @@
                 showToast("Аккаунт успешно зарегистрирован!");
                 await syncCurrentUser();
             } catch (err) {
-                if (err.message === "RULES_DENIED") {
-                    showError("Доступ закрыт правилами Firebase! Открой вкладку Rules в Firebase и поставь true.");
-                } else {
-                    showError("Не удалось связаться с базой! Проверьте интернет.");
-                }
+                showError("Ошибка соединения с базой данных Google!");
             }
 
             btn.innerHTML = `<i class="fa-solid fa-user-plus"></i> Зарегистрироваться`;
             btn.disabled = false;
         }
 
-        // ВХОД
+        // ВХОД ЧЕРЕЗ GOOGLE FIREBASE
         async function handleLogin() {
             const nick = document.getElementById("loginNick").value.trim();
             const pass = document.getElementById("loginPass").value;
@@ -1484,14 +1450,14 @@
                 showToast("Вы вошли как " + user.displayNick);
                 await syncCurrentUser();
             } catch (err) {
-                showError("Ошибка подключения к серверу авторизации!");
+                showError("Ошибка подключения к базе данных!");
             }
 
             btn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Войти в аккаунт`;
             btn.disabled = false;
         }
 
-        // СОХРАНЕНИЕ ГОРОДА
+        // СОХРАНЕНИЕ ГОРОДА В FIREBASE
         async function saveTownName() {
             const currentKey = localStorage.getItem("thetown_current_user");
             if (!currentKey) return;
@@ -1499,7 +1465,7 @@
             const townName = document.getElementById("profileTownInput").value.trim();
             try {
                 await firebaseRequest(`users/${currentKey}/town`, "PUT", townName);
-                showToast("Название государства сохранено!");
+                showToast("Название государства сохранено в облаке!");
             } catch (e) {
                 showToast("Ошибка сохранения!");
             }
@@ -1512,7 +1478,7 @@
             syncCurrentUser();
         }
 
-        // СИНХРОНИЗАЦИЯ ПРОФИЛЯ
+        // СИНХРОНИЗАЦИЯ ПРОФИЛЯ С БАЗОЙ GOOGLE
         async function syncCurrentUser() {
             const currentKey = localStorage.getItem("thetown_current_user");
             const authContainer = document.getElementById("authContainer");
@@ -1541,7 +1507,7 @@
                 const headUrl = `https://minotar.net/helm/${user.displayNick}/64.png`;
                 navBtn.innerHTML = `<img src="${headUrl}" alt="head"> ${user.displayNick}`;
 
-                // Проверяем бан (админов забанить нельзя)
+                // Проверяем, забанен ли игрок (админов забанить нельзя)
                 if (user.banned && !isAdmin(currentKey)) {
                     authContainer.style.display = "none";
                     profileContainer.style.display = "none";
@@ -1553,6 +1519,7 @@
                     return;
                 }
 
+                // Отображаем обычный профиль
                 authContainer.style.display = "none";
                 bannedContainer.style.display = "none";
                 profileContainer.style.display = "block";
@@ -1563,6 +1530,7 @@
                 document.getElementById("profileRegDate").innerText = user.regDate || "Недавно";
                 document.getElementById("profileTownInput").value = user.town || "";
 
+                // Выдача ролей и открытие кнопки Админ-панели
                 const badge = document.getElementById("profileRoleBadge");
                 if (currentKey === "mrlov3n4ik") {
                     badge.className = "role-badge role-creator";
@@ -1602,7 +1570,7 @@
 
         async function loadAdminPlayers() {
             const listEl = document.getElementById("adminPlayersList");
-            listEl.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Загрузка игроков из облачной базы...</p>`;
+            listEl.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Загрузка игроков из базы Google...</p>`;
 
             try {
                 const users = await firebaseRequest("users", "GET");
@@ -1623,8 +1591,8 @@
             let townsCount = 0;
 
             keys.forEach(k => {
-                if (cachedUsersDB[k] && cachedUsersDB[k].banned) bannedCount++;
-                if (cachedUsersDB[k] && cachedUsersDB[k].town && cachedUsersDB[k].town.trim() !== "") townsCount++;
+                if (cachedUsersDB[k].banned) bannedCount++;
+                if (cachedUsersDB[k].town && cachedUsersDB[k].town.trim() !== "") townsCount++;
             });
 
             document.getElementById("statTotalPlayers").innerText = total;
@@ -1633,7 +1601,6 @@
 
             const filteredKeys = keys.filter(k => {
                 const u = cachedUsersDB[k];
-                if (!u) return false;
                 const nickMatch = (u.displayNick || k).toLowerCase().includes(search);
                 const townMatch = (u.town || "").toLowerCase().includes(search);
                 return nickMatch || townMatch;
@@ -1702,15 +1669,14 @@
 
             const targetUser = cachedUsersDB[targetKey];
             const reason = prompt(`Укажите причину бана для игрока ${targetUser.displayNick}:`, "Нарушение правил сервера");
-            if (reason === null) return;
+            if (reason === null) return; // Отмена
 
             const adminDisplay = currentKey === "mrlov3n4ik" ? "MrLov3n4ik" : "Vunpos";
-            targetUser.banned = true;
-            targetUser.banReason = reason.trim() || "Нарушение правил";
-            targetUser.bannedBy = adminDisplay;
 
             try {
-                await firebaseRequest(`users/${targetKey}`, "PUT", targetUser);
+                await firebaseRequest(`users/${targetKey}/banned`, "PUT", true);
+                await firebaseRequest(`users/${targetKey}/banReason`, "PUT", reason.trim() || "Нарушение правил");
+                await firebaseRequest(`users/${targetKey}/bannedBy`, "PUT", adminDisplay);
                 showToast(`Игрок ${targetUser.displayNick} забанен!`);
                 await loadAdminPlayers();
             } catch (e) {
@@ -1724,12 +1690,10 @@
             if (!isAdmin(currentKey)) return;
 
             const targetUser = cachedUsersDB[targetKey];
-            targetUser.banned = false;
-            targetUser.banReason = "";
-            targetUser.bannedBy = "";
-
             try {
-                await firebaseRequest(`users/${targetKey}`, "PUT", targetUser);
+                await firebaseRequest(`users/${targetKey}/banned`, "PUT", false);
+                await firebaseRequest(`users/${targetKey}/banReason`, "PUT", "");
+                await firebaseRequest(`users/${targetKey}/bannedBy`, "PUT", "");
                 showToast(`Игрок ${targetUser.displayNick} разбанен!`);
                 await loadAdminPlayers();
             } catch (e) {
@@ -1737,7 +1701,7 @@
             }
         }
 
-        // УДАЛИТЬ АККАУНТ ИГРОКА (через перезапись в null, чтобы работало на всех прокси)
+        // УДАЛИТЬ АККАУНТ ИГРОКА
         async function deletePlayer(targetKey) {
             const currentKey = localStorage.getItem("thetown_current_user");
             if (!isAdmin(currentKey)) return;
@@ -1746,7 +1710,7 @@
             if (!confirm(`Вы точно хотите полностью удалить аккаунт ${targetUser.displayNick} из базы данных?`)) return;
 
             try {
-                await firebaseRequest(`users/${targetKey}`, "PUT", null);
+                await firebaseRequest(`users/${targetKey}`, "DELETE");
                 showToast(`Аккаунт ${targetUser.displayNick} удален!`);
                 await loadAdminPlayers();
             } catch (e) {

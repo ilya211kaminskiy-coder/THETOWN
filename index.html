@@ -12,10 +12,6 @@
     <!-- Иконки FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- ОФИЦИАЛЬНЫЙ SDK GOOGLE FIREBASE (БЕЗ ПРОКСИ) -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-
     <style>
         :root {
             --bg-dark: #0b0d12;
@@ -826,18 +822,6 @@
             color: #ef4444;
         }
 
-        .db-status-bar {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            padding: 5px 12px;
-            border-radius: 50px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-        }
-
         .auth-tabs {
             display: flex;
             background: rgba(0, 0, 0, 0.35);
@@ -994,6 +978,27 @@
             margin-bottom: 20px;
             padding-bottom: 16px;
             border-bottom: 1px solid var(--border);
+        }
+
+        .btn-refresh-db {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--support-color);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            padding: 9px 15px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-refresh-db:hover {
+            background: var(--support-color);
+            color: #000;
         }
 
         .admin-stats-cards {
@@ -1510,7 +1515,7 @@
                 <i class="fa-solid fa-headset" style="color: var(--support-color);"></i> Техподдержка THETOWN
             </h2>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
-                Опиши свою проблему, и администрация ответит на твоё обращение в реальном времени.
+                Опиши свою проблему, и администрация ответит на твоё обращение.
             </p>
 
             <form onsubmit="submitSupportTicket(event)" style="margin-bottom: 24px;">
@@ -1522,13 +1527,13 @@
                     <label>Описание проблемы или вопрос</label>
                     <textarea id="supportMsgInput" class="form-input" rows="3" placeholder="Опиши подробно проблему..." required maxlength="500" style="resize: vertical;"></textarea>
                 </div>
-                <button type="submit" id="supportSubmitBtn" class="btn-support" style="width: 100%; justify-content: center;">
+                <button type="submit" class="btn-support" style="width: 100%; justify-content: center;">
                     <i class="fa-solid fa-paper-plane"></i> Отправить обращение
                 </button>
             </form>
 
             <div style="border-top: 1px solid var(--border); padding-top: 18px;">
-                <h4 style="margin-bottom: 12px; font-size: 0.95rem;">Все обращения и ответы администрации:</h4>
+                <h4 style="margin-bottom: 12px; font-size: 0.95rem;">Твои обращения и ответы администрации:</h4>
                 <div id="myTicketsContainer" style="max-height: 240px; overflow-y: auto;"></div>
             </div>
         </div>
@@ -1616,17 +1621,16 @@
                     </h2>
                     <p style="color: var(--text-muted); font-size: 0.88rem;">Доступ: MrLov3n4ik, Vunpos и Sanraizzz</p>
                 </div>
-                <div class="db-status-bar" id="dbConnectionBadge">
-                    <span class="status-dot" id="dbStatusDot" style="background: #f59e0b;"></span>
-                    <span id="dbStatusLabel">Подключение к Firebase...</span>
-                </div>
+                <button class="btn-refresh-db" onclick="syncAllFromFirebase(true)">
+                    <i class="fa-solid fa-rotate"></i> Обновить базу
+                </button>
             </div>
 
             <!-- УПРАВЛЕНИЕ СТАТУСОМ СЕРВЕРА -->
             <div class="admin-status-control">
                 <div>
                     <h4 style="font-weight: 800; margin-bottom: 4px;"><i class="fa-solid fa-server"></i> Статус сервера на сайте</h4>
-                    <p style="font-size: 0.82rem; color: var(--text-muted);">Переключи состояние сервера (отображается всем игрокам в реальном времени)</p>
+                    <p style="font-size: 0.82rem; color: var(--text-muted);">Переключи состояние сервера (отображается всем игрокам на главной)</p>
                 </div>
                 <div class="status-btn-group">
                     <button id="btnSetOnline" class="btn-status-switch" onclick="setServerStatus('online')">
@@ -1699,20 +1703,37 @@
 
     <script>
         // =========================================================================
-        // ОФИЦИАЛЬНОЕ ПОДКЛЮЧЕНИЕ К GOOGLE FIREBASE REALTIME DATABASE (БЕЗ ПРОКСИ)
+        // МГНОВЕННАЯ РЕГИСТРАЦИЯ + ПРЯМАЯ СИНХРОНИЗАЦИЯ С FIREBASE (БЕЗ ПРОКСИ)
         // =========================================================================
-        const firebaseConfig = {
-            databaseURL: "https://thetown-6fbfa-default-rtdb.firebaseio.com"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
-        // Список главных администраторов проекта
+        const FIREBASE_URL = "https://thetown-6fbfa-default-rtdb.firebaseio.com";
+        const LOCAL_DB_KEY = "thetown_direct_db";
         const ADMINS = ["mrlov3n4ik", "vunpos", "sanraizzz"];
-        let cachedUsers = {};
-        let cachedTickets = {};
-        let currentServerStatus = "online";
+
+        function getLocalDB() {
+            try {
+                const raw = localStorage.getItem(LOCAL_DB_KEY);
+                const parsed = raw ? JSON.parse(raw) : {};
+                return {
+                    users: parsed.users || {},
+                    tickets: parsed.tickets || {},
+                    settings: parsed.settings || { serverStatus: "online" }
+                };
+            } catch (e) {
+                return { users: {}, tickets: {}, settings: { serverStatus: "online" } };
+            }
+        }
+
+        function saveLocalDB(db) {
+            try {
+                localStorage.setItem(LOCAL_DB_KEY, JSON.stringify(db));
+            } catch (e) {}
+        }
+
+        // Инициализируем память сразу при открытии страницы
+        let initialDB = getLocalDB();
+        let cachedUsers = initialDB.users;
+        let cachedTickets = initialDB.tickets;
+        let currentServerStatus = initialDB.settings.serverStatus || "online";
 
         function isAdminNick(nick) {
             if (!nick) return false;
@@ -1728,7 +1749,7 @@
             toast.classList.add('show');
             setTimeout(() => {
                 toast.classList.remove('show');
-            }, 3500);
+            }, 3000);
         }
 
         function copyIP() {
@@ -1738,68 +1759,112 @@
             });
         }
 
-        // Отслеживание прямого подключения к Firebase в реальном времени
-        db.ref('.info/connected').on('value', (snap) => {
-            const dot = document.getElementById('dbStatusDot');
-            const label = document.getElementById('dbStatusLabel');
-            if (!dot || !label) return;
-
-            if (snap.val() === true) {
-                dot.style.background = '#10b981';
-                dot.style.boxShadow = '0 0 8px #10b981';
-                label.textContent = 'Firebase подключен (Live)';
-                label.style.color = '#34d399';
-            } else {
-                dot.style.background = '#f59e0b';
-                dot.style.boxShadow = 'none';
-                label.textContent = 'Ожидание сети Firebase...';
-                label.style.color = '#fbbf24';
+        // Прямой запрос к Firebase без прокси и без зависания интерфейса
+        async function firebaseRequest(path, method = 'GET', bodyData = null) {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 6000);
+            try {
+                const url = `${FIREBASE_URL}/${path}.json?t=${Date.now()}`;
+                const options = {
+                    method,
+                    cache: 'no-store',
+                    signal: controller.signal
+                };
+                if (bodyData !== null) {
+                    options.headers = { 'Content-Type': 'application/json' };
+                    options.body = JSON.stringify(bodyData);
+                }
+                const res = await fetch(url, options);
+                clearTimeout(timer);
+                if (!res.ok) return null;
+                return await res.json();
+            } catch (e) {
+                clearTimeout(timer);
+                return null;
             }
-        });
+        }
 
-        // Авто-подписка на все изменения в базе (Игроки, Тикеты, Статус сервера)
-        function initRealtimeSync() {
-            // 1. Слушаем статус сервера в реальном времени
-            db.ref('settings/serverStatus').on('value', (snap) => {
-                currentServerStatus = snap.val() || 'online';
-                applyServerStatusUI(currentServerStatus);
-            });
+        // Сохранение записи мгновенно локально + отправка в Firebase
+        async function dbWriteRecord(section, key, value) {
+            const localDB = getLocalDB();
+            if (!localDB[section]) localDB[section] = {};
+            localDB[section][key] = value;
+            saveLocalDB(localDB);
 
-            // 2. Слушаем список зарегистрированных игроков в реальном времени
-            db.ref('users').on('value', (snap) => {
-                cachedUsers = snap.val() || {};
-                renderAdminUsersList();
-                updateNavButton();
+            if (section === 'users') cachedUsers = localDB.users;
+            if (section === 'tickets') cachedTickets = localDB.tickets;
+            if (section === 'settings' && key === 'serverStatus') currentServerStatus = value;
 
-                // Если открыт профиль текущего игрока — обновляем его на лету
-                const currentNick = getCurrentUser();
-                if (currentNick && cachedUsers[currentNick.toLowerCase()]) {
-                    const profileSec = document.getElementById('profileSection');
-                    if (profileSec && profileSec.style.display === 'block') {
-                        renderProfile(cachedUsers[currentNick.toLowerCase()]);
-                    }
-                }
-            }, (err) => {
-                if (err && err.code === 'PERMISSION_DENIED') {
-                    showToast("Внимание: Открой вкладку Rules в Firebase и разреши чтение/запись (true)!", true);
-                }
-            });
+            // Отправляем напрямую в Firebase в фоне
+            firebaseRequest(`${section}/${key}`, 'PUT', value);
+        }
 
-            // 3. Слушаем обращения в техподдержку в реальном времени
-            db.ref('tickets').on('value', (snap) => {
-                cachedTickets = snap.val() || {};
-                renderMyTickets();
-                renderAdminTicketsList();
-                renderAdminUsersList();
-            });
+        // Удаление записи мгновенно локально + удаление из Firebase
+        async function dbRemoveRecord(section, key) {
+            const localDB = getLocalDB();
+            if (localDB[section] && localDB[section][key] !== undefined) {
+                delete localDB[section][key];
+                saveLocalDB(localDB);
+            }
+            if (section === 'users') cachedUsers = localDB.users;
+            if (section === 'tickets') cachedTickets = localDB.tickets;
+
+            firebaseRequest(`${section}/${key}`, 'DELETE');
+        }
+
+        // Двусторонняя синхронизация с Firebase (выгружает локальные записи в облако и скачивает новые от друзей)
+        async function syncAllFromFirebase(showNotification = false) {
+            const localDB = getLocalDB();
+
+            // Если локально есть созданные игроки или тикеты — отправляем их через PATCH (не перезаписывая чужие!)
+            if (Object.keys(localDB.users).length > 0) {
+                firebaseRequest('users', 'PATCH', localDB.users);
+            }
+            if (Object.keys(localDB.tickets).length > 0) {
+                firebaseRequest('tickets', 'PATCH', localDB.tickets);
+            }
+
+            // Скачиваем актуальную базу из облака Firebase
+            const [cloudUsers, cloudTickets, cloudStatus] = await Promise.all([
+                firebaseRequest('users', 'GET'),
+                firebaseRequest('tickets', 'GET'),
+                firebaseRequest('settings/serverStatus', 'GET')
+            ]);
+
+            if (cloudUsers && typeof cloudUsers === 'object') {
+                // Объединяем: локальные + облачные (облачные поверх)
+                localDB.users = { ...localDB.users, ...cloudUsers };
+            }
+            if (cloudTickets && typeof cloudTickets === 'object') {
+                localDB.tickets = { ...localDB.tickets, ...cloudTickets };
+            }
+            if (cloudStatus && typeof cloudStatus === 'string') {
+                localDB.settings.serverStatus = cloudStatus;
+            }
+
+            saveLocalDB(localDB);
+            cachedUsers = localDB.users;
+            cachedTickets = localDB.tickets;
+            currentServerStatus = localDB.settings.serverStatus || 'online';
+
+            applyServerStatusUI(currentServerStatus);
+            renderAdminUsersList();
+            renderAdminTicketsList();
+            renderMyTickets();
+            updateNavButton();
+
+            if (showNotification) {
+                showToast("Данные синхронизированы!");
+            }
         }
 
         // --- СТАТУС СЕРВЕРА (ОНЛАЙН / ТЕХ. РАБОТЫ / ВЫКЛЮЧЕН) ---
         function applyServerStatusUI(status) {
             const badge = document.getElementById('serverStatusBadge');
             const text = document.getElementById('serverStatusText');
-            badge.className = 'status-badge';
+            if (!badge || !text) return;
 
+            badge.className = 'status-badge';
             if (status === 'maintenance') {
                 badge.classList.add('status-maintenance');
                 text.textContent = 'На тех. работах';
@@ -1825,16 +1890,13 @@
             const currentNick = getCurrentUser();
             if (!isAdminNick(currentNick)) return;
 
-            try {
-                await db.ref('settings/serverStatus').set(status);
-                const names = { online: "Включен", maintenance: "На тех. работах", offline: "Выключен" };
-                showToast(`Статус сервера изменён: ${names[status]}`);
-            } catch (err) {
-                showToast("Ошибка сохранения в Firebase: проверь Rules!", true);
-            }
+            await dbWriteRecord('settings', 'serverStatus', status);
+            applyServerStatusUI(status);
+            const names = { online: "Включен", maintenance: "На тех. работах", offline: "Выключен" };
+            showToast(`Статус сервера изменён: ${names[status]}`);
         }
 
-        // --- СИСТЕМА АККАУНТОВ ---
+        // --- СИСТЕМА АККАУНТОВ (МГНОВЕННАЯ РАБОТА БЕЗ ЗАВИСАНИЙ) ---
         let currentAuthMode = 'login';
 
         function getCurrentUser() {
@@ -1862,13 +1924,9 @@
             }
 
             const user = cachedUsers[currentNick.toLowerCase()];
-            if (user) {
-                btn.innerHTML = `<img src="https://minotar.net/helm/${user.displayNick}/64.png" alt="${user.displayNick}"> <span>${user.displayNick}</span>`;
-                adminBtn.style.display = isAdminNick(user.displayNick) ? 'inline-flex' : 'none';
-            } else {
-                btn.innerHTML = `<img src="https://minotar.net/helm/${currentNick}/64.png" alt="${currentNick}"> <span>${currentNick}</span>`;
-                adminBtn.style.display = isAdminNick(currentNick) ? 'inline-flex' : 'none';
-            }
+            const displayNick = user ? user.displayNick : currentNick;
+            btn.innerHTML = `<img src="https://minotar.net/helm/${displayNick}/64.png" alt="${displayNick}"> <span>${displayNick}</span>`;
+            adminBtn.style.display = isAdminNick(displayNick) ? 'inline-flex' : 'none';
         }
 
         function switchAuthTab(mode) {
@@ -1879,23 +1937,12 @@
             document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Войти в аккаунт' : 'Создать аккаунт';
         }
 
-        async function openAccountModal() {
+        function openAccountModal() {
             const modal = document.getElementById('accountModal');
             const currentNick = getCurrentUser();
 
-            if (currentNick) {
-                let user = cachedUsers[currentNick.toLowerCase()];
-                if (!user) {
-                    const snap = await db.ref(`users/${currentNick.toLowerCase()}`).get();
-                    user = snap.val();
-                }
-                if (user) {
-                    renderProfile(user);
-                } else {
-                    setCurrentUser(null);
-                    document.getElementById('authSection').style.display = 'block';
-                    document.getElementById('profileSection').style.display = 'none';
-                }
+            if (currentNick && cachedUsers[currentNick.toLowerCase()]) {
+                renderProfile(cachedUsers[currentNick.toLowerCase()]);
             } else {
                 document.getElementById('authSection').style.display = 'block';
                 document.getElementById('profileSection').style.display = 'none';
@@ -1917,62 +1964,52 @@
             const pass = document.getElementById('mcPassInput').value;
             const passConfirm = document.getElementById('mcPassConfirmInput').value;
             const lowerNick = nick.toLowerCase();
-            const submitBtn = document.getElementById('authSubmitBtn');
 
-            submitBtn.disabled = true;
-            submitBtn.textContent = "Синхронизация с базой...";
-
-            try {
-                const snap = await db.ref(`users/${lowerNick}`).get();
-                const existingUser = snap.val();
-
-                if (currentAuthMode === 'register') {
-                    if (pass !== passConfirm) {
-                        showToast("Пароли не совпадают!", true);
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Создать аккаунт';
-                        return;
-                    }
-                    if (existingUser) {
-                        showToast("Этот никнейм уже зарегистрирован!", true);
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Создать аккаунт';
-                        return;
-                    }
-
-                    const newUser = {
-                        displayNick: nick,
-                        password: pass,
-                        regDate: new Date().toLocaleDateString('ru-RU'),
-                        town: "",
-                        banned: false,
-                        banReason: ""
-                    };
-
-                    await db.ref(`users/${lowerNick}`).set(newUser);
-                    cachedUsers[lowerNick] = newUser;
-                    setCurrentUser(lowerNick);
-                    renderProfile(newUser);
-                    showToast("Аккаунт сохранён в базу данных!");
-                } else {
-                    if (!existingUser || existingUser.password !== pass) {
-                        showToast("Неверный никнейм или пароль!", true);
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Войти в аккаунт';
-                        return;
-                    }
-                    setCurrentUser(lowerNick);
-                    renderProfile(existingUser);
-                    showToast("С возвращением, " + existingUser.displayNick + "!");
+            // Проверяем сначала локальный кэш, а также быстрый запрос к Firebase (если доступен)
+            let existingUser = cachedUsers[lowerNick] || null;
+            if (!existingUser) {
+                const cloudUser = await firebaseRequest(`users/${lowerNick}`, 'GET');
+                if (cloudUser) {
+                    existingUser = cloudUser;
+                    cachedUsers[lowerNick] = cloudUser;
                 }
-                document.getElementById('authForm').reset();
-            } catch (err) {
-                console.error(err);
-                showToast("Ошибка доступа к Firebase! Проверь Rules (.read: true, .write: true)", true);
             }
 
-            submitBtn.disabled = false;
-            submitBtn.textContent = currentAuthMode === 'login' ? 'Войти в аккаунт' : 'Создать аккаунт';
+            if (currentAuthMode === 'register') {
+                if (pass !== passConfirm) {
+                    showToast("Пароли не совпадают!", true);
+                    return;
+                }
+                if (existingUser) {
+                    showToast("Этот никнейм уже зарегистрирован!", true);
+                    return;
+                }
+
+                const newUser = {
+                    displayNick: nick,
+                    password: pass,
+                    regDate: new Date().toLocaleDateString('ru-RU'),
+                    town: "",
+                    banned: false,
+                    banReason: ""
+                };
+
+                await dbWriteRecord('users', lowerNick, newUser);
+                setCurrentUser(lowerNick);
+                renderProfile(newUser);
+                renderAdminUsersList();
+                showToast("Аккаунт успешно создан!");
+            } else {
+                if (!existingUser || existingUser.password !== pass) {
+                    showToast("Неверный никнейм или пароль!", true);
+                    return;
+                }
+                setCurrentUser(lowerNick);
+                renderProfile(existingUser);
+                showToast("С возвращением, " + existingUser.displayNick + "!");
+            }
+
+            document.getElementById('authForm').reset();
         }
 
         function renderProfile(user) {
@@ -2027,9 +2064,10 @@
 
             const user = cachedUsers[currentNick.toLowerCase()];
             if (user && !user.banned) {
-                const newTown = document.getElementById('profileTownInput').value.trim();
-                await db.ref(`users/${currentNick.toLowerCase()}/town`).set(newTown);
-                showToast("Название города сохранено в БД!");
+                user.town = document.getElementById('profileTownInput').value.trim();
+                await dbWriteRecord('users', currentNick.toLowerCase(), user);
+                renderAdminUsersList();
+                showToast("Данные профиля сохранены!");
             }
         }
 
@@ -2040,7 +2078,7 @@
             showToast("Вы вышли из аккаунта");
         }
 
-        // --- ТЕХПОДДЕРЖКА (ОБРАЩЕНИЯ ИГРОКОВ В FIREBASE) ---
+        // --- ТЕХПОДДЕРЖКА (ОБРАЩЕНИЯ ИГРОКОВ) ---
         function openSupportModal() {
             const modal = document.getElementById('supportModal');
             const currentNick = getCurrentUser();
@@ -2050,6 +2088,7 @@
             }
             modal.classList.add('active');
             renderMyTickets();
+            syncAllFromFirebase(false);
         }
 
         function closeSupportModal() {
@@ -2064,11 +2103,7 @@
             e.preventDefault();
             const nick = document.getElementById('supportNickInput').value.trim();
             const msg = document.getElementById('supportMsgInput').value.trim();
-            const btn = document.getElementById('supportSubmitBtn');
             if (!nick || !msg) return;
-
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Отправка...`;
 
             const ticketId = 't_' + Date.now();
             const ticketData = {
@@ -2080,31 +2115,28 @@
                 repliedBy: ""
             };
 
-            try {
-                await db.ref(`tickets/${ticketId}`).set(ticketData);
-                document.getElementById('supportMsgInput').value = '';
-                showToast("Обращение отправлено и сохранено в БД!");
-            } catch (err) {
-                showToast("Ошибка отправки! Проверь правила Rules в Firebase.", true);
-            }
-
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Отправить обращение`;
+            await dbWriteRecord('tickets', ticketId, ticketData);
+            document.getElementById('supportMsgInput').value = '';
+            renderMyTickets();
+            renderAdminTicketsList();
+            renderAdminUsersList();
+            showToast("Обращение отправлено в техподдержку!");
         }
 
         function renderMyTickets() {
             const container = document.getElementById('myTicketsContainer');
             if (!container) return;
 
-            const keys = Object.keys(cachedTickets).reverse();
+            const keys = Object.keys(cachedTickets).sort().reverse();
 
             if (keys.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">Обращений пока нет.</p>`;
+                container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">Пока нет обращений.</p>`;
                 return;
             }
 
             container.innerHTML = keys.map(id => {
                 const t = cachedTickets[id];
+                if (!t) return '';
                 return `
                     <div class="ticket-card">
                         <div class="ticket-header">
@@ -2135,6 +2167,7 @@
             applyServerStatusUI(currentServerStatus);
             renderAdminUsersList();
             renderAdminTicketsList();
+            syncAllFromFirebase(false);
         }
 
         function closeAdminModal() {
@@ -2178,7 +2211,7 @@
             });
 
             if (filteredKeys.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 24px;">Зарегистрированных игроков пока нет</p>`;
+                container.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 24px;">Аккаунты не найдены</p>`;
                 return;
             }
 
@@ -2211,7 +2244,7 @@
                             <div class="admin-user-meta">
                                 <h4>${u.displayNick} ${statusBadge}</h4>
                                 <p>
-                                    Город: <strong>${u.town || "Не указан"}</strong> • Рег: ${u.regDate || "-"}
+                                    Город: <strong>${u.town || "Не указан"}</strong> • Рег: ${u.regDate}
                                     ${u.banned ? `<br><span style="color:#f87171;">Причина бана: ${u.banReason}</span>` : ''}
                                 </p>
                             </div>
@@ -2228,7 +2261,7 @@
             const container = document.getElementById('adminTicketsContainer');
             if (!container) return;
 
-            const keys = Object.keys(cachedTickets).reverse();
+            const keys = Object.keys(cachedTickets).sort().reverse();
 
             if (keys.length === 0) {
                 container.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 24px;">Обращений в техподдержку пока нет</p>`;
@@ -2237,6 +2270,7 @@
 
             container.innerHTML = keys.map(id => {
                 const t = cachedTickets[id];
+                if (!t) return '';
                 return `
                     <div class="ticket-card">
                         <div class="ticket-header">
@@ -2273,19 +2307,24 @@
             const replyText = prompt(`Ответ игроку ${ticket.nick}:`, ticket.reply || "");
             if (replyText === null) return;
 
-            await db.ref(`tickets/${ticketId}`).update({
-                reply: replyText.trim(),
-                repliedBy: adminDisplay
-            });
-            showToast("Ответ отправлен игроку!");
+            ticket.reply = replyText.trim();
+            ticket.repliedBy = adminDisplay;
+
+            await dbWriteRecord('tickets', ticketId, ticket);
+            renderAdminTicketsList();
+            renderMyTickets();
+            showToast("Ответ сохранён!");
         }
 
         async function adminDeleteTicket(ticketId) {
             const currentNick = getCurrentUser();
             if (!isAdminNick(currentNick)) return;
 
-            await db.ref(`tickets/${ticketId}`).remove();
-            showToast("Тикет удалён из базы");
+            await dbRemoveRecord('tickets', ticketId);
+            renderAdminTicketsList();
+            renderAdminUsersList();
+            renderMyTickets();
+            showToast("Тикет удалён");
         }
 
         async function adminToggleBan(targetKey, shouldBan) {
@@ -2298,19 +2337,18 @@
             if (shouldBan) {
                 const reason = prompt(`Укажи причину блокировки игрока ${targetUser.displayNick}:`, "Нарушение правил сервера");
                 if (reason === null) return;
-                await db.ref(`users/${targetKey}`).update({
-                    banned: true,
-                    banReason: reason.trim() || "Нарушение правил сервера",
-                    bannedBy: currentNick
-                });
+                targetUser.banned = true;
+                targetUser.banReason = reason.trim() || "Нарушение правил сервера";
+                targetUser.bannedBy = currentNick;
                 showToast(`Игрок ${targetUser.displayNick} заблокирован!`, true);
             } else {
-                await db.ref(`users/${targetKey}`).update({
-                    banned: false,
-                    banReason: ""
-                });
+                targetUser.banned = false;
+                targetUser.banReason = "";
                 showToast(`Игрок ${targetUser.displayNick} разблокирован!`);
             }
+
+            await dbWriteRecord('users', targetKey, targetUser);
+            renderAdminUsersList();
         }
 
         async function adminDeleteAccount(targetKey) {
@@ -2322,13 +2360,17 @@
 
             if (!confirm(`Удалить аккаунт игрока ${targetUser.displayNick} навсегда?`)) return;
 
-            await db.ref(`users/${targetKey}`).remove();
-            showToast(`Аккаунт ${targetUser.displayNick} удалён из БД`);
+            await dbRemoveRecord('users', targetKey);
+            renderAdminUsersList();
+            showToast(`Аккаунт ${targetUser.displayNick} удалён`);
         }
 
-        // Запуск живой синхронизации с базой Firebase
-        initRealtimeSync();
+        // Запуск при старте + фоновая синхронизация каждые 5 секунд
         updateNavButton();
+        applyServerStatusUI(currentServerStatus);
+        syncAllFromFirebase(false);
+        setInterval(() => syncAllFromFirebase(false), 5000);
     </script>
 </body>
 </html>
+```
